@@ -3,6 +3,7 @@ package br.ufpi.recicle_ai.domain.mapper;
 import br.ufpi.recicle_ai.domain.model.Coletor;
 import br.ufpi.recicle_ai.domain.model.dto.ColetorDTO;
 import br.ufpi.recicle_ai.domain.model.dto.form.ColetorForm;
+import br.ufpi.recicle_ai.mapper.AgenteMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

@@ -1,5 +1,6 @@
 package br.ufpi.recicle_ai.domain.model.dto;
 
+import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
