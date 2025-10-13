@@ -9,7 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class Produtor extends Agente {
+public class Coletor extends Agente {
     // Atributos futuros podem ser adicionados aqui
 }

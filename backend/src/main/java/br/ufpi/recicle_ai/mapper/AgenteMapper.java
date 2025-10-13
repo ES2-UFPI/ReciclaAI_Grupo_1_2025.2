@@ -1,8 +1,8 @@
 package br.ufpi.recicle_ai.mapper;
 
 import br.ufpi.recicle_ai.domain.model.Agente;
-import br.ufpi.recicle_ai.domain.model.dto.AgenteDTO;
-import br.ufpi.recicle_ai.domain.model.dto.form.AgenteForm;
+import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
+import br.ufpi.recicle_ai.domain.form.AgenteForm;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
