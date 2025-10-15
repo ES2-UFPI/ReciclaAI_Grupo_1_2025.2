@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* RecicleAI Design System - Ecological Theme */
+
+@layer base {
+  :root {
+    /* Background Colors */
+    --background: 0 0% 100%;
+    --background-subtle: 214 39% 98%;
+    --foreground: 0 0% 20%;
+
+    /* Card Colors */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+
+    /* Popover Colors */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+
+    /* Primary - Verde Ecológico */
+    --primary: 122 39% 49%;
+    --primary-dark: 122 47% 33%;
+    --primary-light: 122 39% 95%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Verde suave */
+    --secondary: 122 25% 90%;
+    --secondary-foreground: 122 47% 20%;
+
+    /* Accent - Laranja vibrante para CTAs */
+    --accent: 36 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 36 100% 45%;
+
+    /* Muted */
+    --muted: 210 20% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border & Input */
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 122 39% 49%;
+
+    /* Sidebar - Verde escuro */
+    --sidebar-background: 122 47% 33%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-accent: 122 47% 28%;
+    --sidebar-accent-foreground: 0 0% 100%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 122 20% 12%;
+    --background-subtle: 122 20% 15%;
+    --foreground: 0 0% 95%;
+
+    --card: 122 20% 15%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 122 20% 15%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 122 39% 55%;
+    --primary-dark: 122 47% 40%;
+    --primary-light: 122 39% 20%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 122 20% 20%;
+    --secondary-foreground: 0 0% 95%;
+
+    --accent: 36 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 36 100% 45%;
+
+    --muted: 122 15% 18%;
+    --muted-foreground: 0 0% 60%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 122 15% 25%;
+    --input: 122 15% 25%;
+    --ring: 122 39% 55%;
+
+    --sidebar-background: 122 47% 20%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-accent: 122 47% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background-subtle text-foreground font-poppins;
+  }
+}
+
+@layer utilities {
+  .font-poppins {
+    font-family: 'Poppins', sans-serif;
+  }
+}
