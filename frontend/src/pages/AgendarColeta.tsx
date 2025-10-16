@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Calendar, Clock, User } from "lucide-react";
+import { Search, Calendar, Clock, User, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +13,8 @@ interface Evento {
   data: string;
   horario: string;
   bairro: string;
+  endereco: string;
+  pontoReferencia: string;
 }
 
 const eventosDisponiveis: Evento[] = [
@@ -23,6 +25,8 @@ const eventosDisponiveis: Evento[] = [
     data: "20 de Outubro de 2025",
     horario: "Das 09:00 às 12:00",
     bairro: "Centro",
+    endereco: "Rua Álvaro Mendes, 1342, Centro",
+    pontoReferencia: "Próximo à Praça Rio Branco"
   },
   {
     id: "2",
@@ -31,6 +35,8 @@ const eventosDisponiveis: Evento[] = [
     data: "22 de Outubro de 2025",
     horario: "Das 14:00 às 17:00",
     bairro: "Centro",
+    endereco: "Rua Coelho Rodrigues, 875, Centro",
+    pontoReferencia: "Ao lado do Theatro 4 de Setembro"
   },
   {
     id: "3",
@@ -39,7 +45,9 @@ const eventosDisponiveis: Evento[] = [
     data: "25 de Outubro de 2025",
     horario: "Das 08:00 às 11:00",
     bairro: "Centro",
-  },
+    endereco: "Rua Simplício Mendes, 234, Centro",
+    pontoReferencia: "Próximo ao Mercado Central"
+  }
 ];
 
 const AgendarColeta = () => {
@@ -138,6 +146,19 @@ const AgendarColeta = () => {
                           <p className="text-xs text-muted-foreground mb-0.5">Horário</p>
                           <p className="text-sm font-medium text-foreground">
                             {evento.horario}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-0.5">Endereço</p>
+                          <p className="text-sm font-medium text-foreground">
+                            {evento.endereco}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {evento.pontoReferencia}
                           </p>
                         </div>
                       </div>
