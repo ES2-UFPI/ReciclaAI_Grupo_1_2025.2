@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProdutorController {
 
+    @Autowired
     private final ProdutorService produtorService;
 
     @GetMapping
