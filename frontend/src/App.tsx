@@ -29,6 +29,8 @@ const App = () => (
             <Route path="/historico" element={<Historico />} />
             <Route path="/relatorios" element={<Relatorios />} />
             <Route path="/moedas" element={<Moedas />} />
+            <Route path="/inventory" element={<InventoryList />} />
+            <Route path="/inventory/add" element={<AddInventoryItem />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
