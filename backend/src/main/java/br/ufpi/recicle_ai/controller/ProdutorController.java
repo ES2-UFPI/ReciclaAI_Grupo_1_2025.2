@@ -1,5 +1,6 @@
 package br.ufpi.recicle_ai.controller;
 
+import br.ufpi.recicle_ai.domain.model.dto.ItensDTO;
 import br.ufpi.recicle_ai.domain.model.dto.ProdutorDTO;
 import br.ufpi.recicle_ai.domain.model.dto.form.ItensForm;
 import br.ufpi.recicle_ai.domain.model.dto.form.ProdutorForm;
@@ -57,8 +58,9 @@ public class ProdutorController {
     }
 
     @PostMapping("/{id}/add-item")
-    public ResponseEntity<Void> addItem(@PathVariable Long id, @RequestBody @Valid ItensForm form) {
-        itensService.addItensProdutor(id, form);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ItensDTO> addItem(@PathVariable Long id, @RequestBody @Valid ItensForm form) {
+        ItensDTO dto = itensService.addItensProdutor(id, form);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+        return ResponseEntity.created(uri).body(dto);
     }
 }

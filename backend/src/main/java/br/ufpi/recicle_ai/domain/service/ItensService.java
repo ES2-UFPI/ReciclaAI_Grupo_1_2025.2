@@ -3,6 +3,7 @@ package br.ufpi.recicle_ai.domain.service;
 import br.ufpi.recicle_ai.domain.mapper.ColetorMapper;
 import br.ufpi.recicle_ai.domain.model.Coletor;
 import br.ufpi.recicle_ai.domain.model.dto.ColetorDTO;
+import br.ufpi.recicle_ai.domain.model.dto.ItensDTO;
 import br.ufpi.recicle_ai.domain.model.dto.form.ColetorForm;
 import br.ufpi.recicle_ai.domain.model.dto.form.ItensForm;
 import br.ufpi.recicle_ai.domain.repository.ColetorRepository;
@@ -34,12 +35,13 @@ public class ItensService {
     }
 
 
-    public void addItensProdutor(Long produtorId, ItensForm form) {
+    public ItensDTO addItensProdutor(Long produtorId, ItensForm form) {
         Produtor produtor = produtorRepository.findById(produtorId)
                 .orElseThrow();
 
         Itens novoItem = itensMapper.fromForm(form);
         produtor.getItens().add(novoItem);
         itensRepository.save(novoItem);
+        return itensMapper.toDTO(novoItem);
     }
 }
