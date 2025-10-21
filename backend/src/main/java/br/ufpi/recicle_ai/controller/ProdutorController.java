@@ -1,7 +1,9 @@
 package br.ufpi.recicle_ai.controller;
 
 import br.ufpi.recicle_ai.domain.model.dto.ProdutorDTO;
+import br.ufpi.recicle_ai.domain.model.dto.form.ItensForm;
 import br.ufpi.recicle_ai.domain.model.dto.form.ProdutorForm;
+import br.ufpi.recicle_ai.domain.service.ItensService;
 import br.ufpi.recicle_ai.service.ProdutorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import java.util.List;
 @RequestMapping("/produtores")
 @RequiredArgsConstructor
 public class ProdutorController {
+
+    private final ItensService itensService;
 
     @Autowired
     private final ProdutorService produtorService;
@@ -49,6 +53,12 @@ public class ProdutorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         produtorService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/add-item")
+    public ResponseEntity<Void> addItem(@PathVariable Long id, @RequestBody @Valid ItensForm form) {
+        itensService.addItensProdutor(id, form);
         return ResponseEntity.noContent().build();
     }
 }

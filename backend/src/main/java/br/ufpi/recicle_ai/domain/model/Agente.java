@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-@Entity
 public class Agente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

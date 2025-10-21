@@ -53,4 +53,6 @@ public class ColetorController {
         coletorService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    
 }
