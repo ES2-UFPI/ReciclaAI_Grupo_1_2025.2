@@ -9,6 +9,7 @@ import br.ufpi.recicle_ai.service.ProdutorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -57,10 +58,23 @@ public class ProdutorController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/add-item")
-    public ResponseEntity<ItensDTO> addItem(@PathVariable Long id, @RequestBody @Valid ItensForm form) {
-        ItensDTO dto = itensService.addItensProdutor(id, form);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
-        return ResponseEntity.created(uri).body(dto);
+    @PostMapping("/{id}/adicionar-item")
+    public ResponseEntity<ItensDTO> addItem(@PathVariable Long id, @RequestBody @Valid ItensForm form) throws NotFoundException {
+        ItensDTO dto;
+        boolean isUpdate = produtorService.findItemByIdAndProdutorId(form.getNomeItem(), id);
+        
+        if (isUpdate) {
+            // 1. Caso de Atualização (Item já existe no inventário)
+            dto = itensService.updateItensProdutor(id, form);
+            // Retorna 200 OK
+            return ResponseEntity.ok(dto); 
+        } else {
+            // 2. Caso de Criação (Novo item no inventário)
+            dto = itensService.addItensProdutor(id, form);
+            // Retorna 201 Created
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{itemId}")
+                    .buildAndExpand(dto.getId()).toUri();
+            return ResponseEntity.created(uri).body(dto);
+        }
     }
 }

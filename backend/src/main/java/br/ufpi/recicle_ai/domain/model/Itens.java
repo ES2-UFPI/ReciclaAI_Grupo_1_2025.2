@@ -1,5 +1,7 @@
 package br.ufpi.recicle_ai.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +19,9 @@ import lombok.Getter;
 public class Itens {
 
     @ManyToOne 
-    @JoinColumn(name = "produtor_id") // Optional, but highly recommended to specify the FK column name
+    @JoinColumn(name = "produtor_id") 
+    // Aponta para a lista na entidade Produtor, impedindo que o Jackson a serialize
+    @JsonIgnoreProperties("itens") // <-- Correto!
     private Produtor produtor;
 
     @Id
@@ -64,8 +68,5 @@ public class Itens {
         }
     }
 
-    // Você também pode querer adicionar um método auxiliar para obter o valor
-    public Number getValorNumerico() {
-        return (Number) this.quantidadeEstoque;
-    }
+    
 }
