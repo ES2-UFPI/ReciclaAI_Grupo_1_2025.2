@@ -38,8 +38,8 @@ const InventoryList = () => {
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Inventário de Reciclagem</h1>
-              <p className="text-primary-foreground/90">
+              <h1 className="text-3xl font-bold mb-2 text-black">Inventário de Reciclagem</h1>
+              <p className="text-gray-600">
                 Gerencie seus materiais recicláveis
               </p>
             </div>

@@ -35,9 +35,6 @@ export const InventoryCard = ({ item }: InventoryCardProps) => {
             </div>
             <div>
               <CardTitle className="text-lg">{item.name}</CardTitle>
-              <CardDescription className="text-sm mt-1">
-                {item.description || 'Sem descrição'}
-              </CardDescription>
             </div>
           </div>
         </div>
@@ -56,7 +53,10 @@ export const InventoryCard = ({ item }: InventoryCardProps) => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <TrendingUp className="w-4 h-4" />
             <span className="font-semibold text-foreground">
-              {item.quantity} {item.unit}
+              {item.quantity}{' '}
+              {item.unit === 'unit'
+                ? (item.quantity > 1 ? 'unidades' : 'unidade')
+                : item.unit}
             </span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
@@ -66,13 +66,6 @@ export const InventoryCard = ({ item }: InventoryCardProps) => {
             </span>
           </div>
         </div>
-
-        {item.location && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4" />
-            <span>{item.location}</span>
-          </div>
-        )}
 
         {item.estimatedValue && (
           <div className="pt-2 border-t">

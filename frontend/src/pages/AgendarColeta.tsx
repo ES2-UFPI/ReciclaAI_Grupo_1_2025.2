@@ -31,7 +31,7 @@ const defaultColetasAgendadas: ColetaAgendada[] = [
     data: "23 de Outubro de 2025",
     horario: "Das 10:00 às 13:00",
     bairro: "Centro",
-    materiais: ["Tomates", "Alface", "Cenouras"],
+    materiais: ["Garrafa PET", "Papel"],
     status: "confirmada",
     endereco: "Rua Álvaro Mendes, 1342, Centro",
     pontoReferencia: "Próximo à Praça Rio Branco"

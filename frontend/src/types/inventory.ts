@@ -5,7 +5,6 @@ export type InventoryItem = {
   quantity: number;
   unit?: 'kg' | 'ton' | 'unit';
   condition?: 'excellent' | 'good' | 'fair' | 'poor';
-  description?: string;
   location?: string;
   estimatedValue?: number;
   status: 'ready' | 'pending';
