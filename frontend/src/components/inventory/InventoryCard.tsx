@@ -62,7 +62,7 @@ export const InventoryCard = ({ item }: InventoryCardProps) => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="w-4 h-4" />
             <span>
-              {new Date(item.dateAdded).toLocaleDateString('pt-BR')}
+              {new Date(item.createdAt).toLocaleDateString('pt-BR')}
             </span>
           </div>
         </div>

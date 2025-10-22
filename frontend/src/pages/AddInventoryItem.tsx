@@ -14,18 +14,17 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Save } from 'lucide-react';
 import { toast } from 'sonner';
-import { InventoryItem } from '@/types/inventory';
+import { InventoryItem, categoryLabels } from '@/types/inventory';
+import { useInventory } from '@/contexts/InventoryContext';
 
 const AddInventoryItem = () => {
   const navigate = useNavigate();
+  const { addItem } = useInventory();
   const [formData, setFormData] = useState<Partial<InventoryItem>>({
-    name: '',
     category: undefined,
     quantity: 0,
     unit: 'kg',
     condition: 'good',
-    description: '',
-    location: '',
     estimatedValue: 0,
   });
 
@@ -33,39 +32,45 @@ const AddInventoryItem = () => {
     e.preventDefault();
     
     // Validation
-    if (!formData.name || !formData.category || !formData.quantity) {
+    if (!formData.category || !formData.quantity) {
       toast.error('Por favor, preencha todos os campos obrigatórios');
       return;
     }
 
-    // Here you would typically send the data to your backend
-    console.log('Saving item:', formData);
+    // Add the new item using the context
+    const name = formData.category ? categoryLabels[formData.category] ?? formData.category : 'Item';
+    addItem({ ...formData, name });
     
     toast.success('Item adicionado ao inventário com sucesso!');
     navigate('/inventory');
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-gradient-eco text-primary-foreground py-6 px-4 shadow-soft">
-        <div className="container mx-auto">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/inventory')}
-            className="mb-4 text-primary-foreground hover:bg-white/20"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar ao Inventário
-          </Button>
-          <h1 className="text-3xl font-bold">Adicionar Novo Item</h1>
-          <p className="text-primary-foreground/90 mt-2">
-            Cadastre um novo material reciclável no inventário
-          </p>
-        </div>
-      </header>
+    <div className="max-w-5xl">
+      {/* Top bar + texts (layout copied from AgendarColeta) */}
+      <div className="bg-gradient-eco">
+        <div className="max-w-5xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <Button
+              onClick={() => navigate('/inventory')}
+              className="!bg-green-600 !text-white !border-transparent shadow-md hover:!bg-green-700 focus:!ring-2 focus:!ring-green-300"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Voltar ao Inventário
+            </Button>
+          </div>
 
-      <main className="container mx-auto px-4 py-8 max-w-3xl">
+          <div className="mt-4 mb-8">
+            <h1 className="text-3xl font-bold text-foreground mb-2">Adicionar Novo Item</h1>
+            <p className="text-muted-foreground">
+              Cadastre um novo material reciclável no inventário
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Content area (form + info) */}
+      <div className="px-4 py-4 max-w-3xl ml-0 -mt-6">
         <Card>
           <CardHeader>
             <CardTitle>Informações do Item</CardTitle>
@@ -77,19 +82,6 @@ const AddInventoryItem = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Info */}
               <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name" className="required">
-                    Nome do Item *
-                  </Label>
-                  <Input
-                    id="name"
-                    placeholder="Ex: Garrafas PET"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                  />
-                </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="category">Categoria *</Label>
@@ -172,27 +164,6 @@ const AddInventoryItem = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="description">Descrição</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Detalhes sobre o material..."
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    rows={3}
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="location">Localização</Label>
-                  <Input
-                    id="location"
-                    placeholder="Ex: Depósito A - Setor 1"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  />
-                </div>
-
-                <div>
                   <Label htmlFor="estimatedValue">Valor Estimado (R$)</Label>
                   <Input
                     id="estimatedValue"
@@ -221,7 +192,10 @@ const AddInventoryItem = () => {
                 >
                   Cancelar
                 </Button>
-                <Button type="submit" className="flex-1 bg-gradient-eco">
+                <Button
+                  type="submit"
+                  className="flex-1 !bg-gradient-eco !text-white shadow-md hover:opacity-95"
+                >
                   <Save className="mr-2 h-4 w-4" />
                   Salvar Item
                 </Button>
@@ -239,7 +213,7 @@ const AddInventoryItem = () => {
             </p>
           </CardContent>
         </Card>
-      </main>
+      </div>
     </div>
   );
 };

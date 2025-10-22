@@ -66,6 +66,31 @@ const DeclaracaoMateriais = () => {
       return;
     }
 
+    // montar objeto de agendamento e salvar no localStorage
+    try {
+      const novoAgendamento = {
+        id: crypto.randomUUID(),
+        coletor: evento.coletor,
+        coletorIniciais: evento.coletorIniciais,
+        data: evento.data,
+        horario: evento.horario,
+        bairro: evento.bairro ?? "",
+        endereco: evento.endereco ?? "",
+        pontoReferencia: evento.pontoReferencia ?? "",
+        materiais: materiaisPreenchidos.map((m) => m.nome),
+        status: "confirmada" as const,
+      };
+
+      const key = "coletasAgendadas";
+      const raw = localStorage.getItem(key);
+      const lista = raw ? JSON.parse(raw) : [];
+      lista.unshift(novoAgendamento); // adicionar no topo
+      localStorage.setItem(key, JSON.stringify(lista));
+    } catch (err) {
+      // não bloquear fluxo por erro de storage
+      console.error("Erro ao salvar agendamento:", err);
+    }
+
     setShowConfirmacao(true);
   };
 

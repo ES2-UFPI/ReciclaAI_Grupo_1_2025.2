@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InventoryCard } from '@/components/inventory/InventoryCard';
 import { InventoryStats } from '@/components/inventory/InventoryStats';
-import { mockInventoryItems } from '@/data/mockInventory';
+import { useInventory } from '@/contexts/InventoryContext';
+import { categoryLabels } from '@/types/inventory';
 import { Plus, Search, Filter } from 'lucide-react';
 import {
   Select,
@@ -18,10 +19,14 @@ const InventoryList = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const { items } = useInventory();
 
-  const filteredItems = mockInventoryItems.filter((item) => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description?.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredItems = items.filter((item) => {
+    const term = searchTerm.trim().toLowerCase();
+    const matchesSearch = term === '' || 
+      categoryLabels[item.category].toLowerCase().includes(term) ||
+      String(item.quantity).toLowerCase().includes(term) ||
+      (item.estimatedValue !== undefined && String(item.estimatedValue).toLowerCase().includes(term));
     const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
