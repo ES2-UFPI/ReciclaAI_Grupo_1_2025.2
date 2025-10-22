@@ -7,5 +7,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ProdutorDTO extends AgenteDTO {
-    // Atributos futuros podem ser adicionados aqui
+    
+    
+    
 }
