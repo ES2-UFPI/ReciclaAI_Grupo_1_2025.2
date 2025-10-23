@@ -1,11 +1,15 @@
 package br.ufpi.recicle_ai.controller;
 
+import br.ufpi.recicle_ai.domain.model.dto.ItensDTO;
 import br.ufpi.recicle_ai.domain.model.dto.ProdutorDTO;
+import br.ufpi.recicle_ai.domain.model.dto.form.ItensForm;
 import br.ufpi.recicle_ai.domain.model.dto.form.ProdutorForm;
+import br.ufpi.recicle_ai.domain.service.ItensService;
 import br.ufpi.recicle_ai.service.ProdutorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -18,6 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProdutorController {
 
+    private final ItensService itensService;
+
+    @Autowired
     private final ProdutorService produtorService;
 
     @GetMapping
@@ -49,5 +56,25 @@ public class ProdutorController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         produtorService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/adicionar-item")
+    public ResponseEntity<ItensDTO> addItem(@PathVariable Long id, @RequestBody @Valid ItensForm form) throws NotFoundException {
+        ItensDTO dto;
+        boolean isUpdate = produtorService.findItemByIdAndProdutorId(form.getNomeItem(), id);
+        
+        if (isUpdate) {
+            // 1. Caso de Atualização (Item já existe no inventário)
+            dto = itensService.updateItensProdutor(id, form);
+            // Retorna 200 OK
+            return ResponseEntity.ok(dto); 
+        } else {
+            // 2. Caso de Criação (Novo item no inventário)
+            dto = itensService.addItensProdutor(id, form);
+            // Retorna 201 Created
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{itemId}")
+                    .buildAndExpand(dto.getId()).toUri();
+            return ResponseEntity.created(uri).body(dto);
+        }
     }
 }

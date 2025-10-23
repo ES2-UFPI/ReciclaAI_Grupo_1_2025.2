@@ -57,4 +57,11 @@ public class ProdutorService {
     public void delete(Long id) {
         produtorRepository.deleteById(id);
     }
+
+    @Transactional
+    public boolean findItemByIdAndProdutorId(String nomeItem, Long produtorId) {
+        Produtor produtor = produtorRepository.findById(produtorId).orElseThrow();
+        return produtor.getItens().stream()
+                .anyMatch(item -> item.getNomeItem().equalsIgnoreCase(nomeItem));
+    }
 }

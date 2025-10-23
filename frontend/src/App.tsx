@@ -11,6 +11,9 @@ import Historico from "./pages/Historico";
 import Relatorios from "./pages/Relatorios";
 import Moedas from "./pages/Moedas";
 import NotFound from "./pages/NotFound";
+import InventoryList from "./pages/InventoryList";
+import AddInventoryItem from "./pages/AddInventoryItem";
+import { InventoryProvider } from "@/contexts/InventoryContext";
 
 const queryClient = new QueryClient();
 
@@ -20,19 +23,23 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/agendar-coleta" replace />} />
-          <Route element={<DashboardLayout />}>
-            <Route path="/agendar-coleta" element={<AgendarColeta />} />
-            <Route path="/declaracao-materiais" element={<DeclaracaoMateriais />} />
-            <Route path="/inventario" element={<Inventario />} />
-            <Route path="/historico" element={<Historico />} />
-            <Route path="/relatorios" element={<Relatorios />} />
-            <Route path="/moedas" element={<Moedas />} />
-          </Route>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <InventoryProvider>
+          <Routes>
+            <Route path="/" element={<Navigate to="/agendar-coleta" replace />} />
+            <Route element={<DashboardLayout />}>
+              <Route path="/agendar-coleta" element={<AgendarColeta />} />
+              <Route path="/declaracao-materiais" element={<DeclaracaoMateriais />} />
+              <Route path="/inventario" element={<InventoryList />} />
+              <Route path="/inventory" element={<InventoryList />} />
+              <Route path="/inventory/add" element={<AddInventoryItem />} />
+              <Route path="/historico" element={<Historico />} />
+              <Route path="/relatorios" element={<Relatorios />} />
+              <Route path="/moedas" element={<Moedas />} />
+            </Route>
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </InventoryProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
