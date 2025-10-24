@@ -84,4 +84,15 @@ public class ItensService {
         
         return itensMapper.toDTO(itemAtualizado);
     }
+
+    @Transactional(readOnly = true)
+    public List<ItensDTO> listarItensPorProdutor(Long produtorId) {
+        // Busca os itens no banco pelo ID do produtor
+        List<Itens> itens = itensRepository.findByProdutorId(produtorId);
+
+        // Converte a lista de entidades em DTOs (formato que o controller envia para o front)
+        return itens.stream()
+                .map(itensMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }
