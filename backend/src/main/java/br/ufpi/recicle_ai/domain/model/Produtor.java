@@ -6,13 +6,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 import br.ufpi.recicle_ai.domain.enuns.TipoAgenteEnum;
-import br.ufpi.recicle_ai.domain.model.Itens;
 
 @Getter
 @Setter
@@ -28,7 +26,7 @@ public class Produtor extends Agente {
     }
 
     public Produtor(Long id, String nome, String cpf, String cnpj) {
-        super(id, nome, TipoAgenteEnum.PRODUTOR, cpf, cnpj);
+        super(id, nome, TipoAgenteEnum.PESSOA_FISICA, cpf, cnpj);
     }
 
     

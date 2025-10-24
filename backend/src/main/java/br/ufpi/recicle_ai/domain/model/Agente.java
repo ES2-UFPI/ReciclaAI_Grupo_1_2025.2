@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @MappedSuperclass
 public class Agente {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

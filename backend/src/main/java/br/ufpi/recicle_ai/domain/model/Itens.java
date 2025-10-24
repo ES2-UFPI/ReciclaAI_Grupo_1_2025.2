@@ -1,5 +1,6 @@
 package br.ufpi.recicle_ai.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -20,6 +21,7 @@ public class Itens {
 
     @ManyToOne 
     @JoinColumn(name = "produtor_id") 
+    @JsonIgnore
     // Aponta para a lista na entidade Produtor, impedindo que o Jackson a serialize
     @JsonIgnoreProperties("itens") // <-- Correto!
     private Produtor produtor;
