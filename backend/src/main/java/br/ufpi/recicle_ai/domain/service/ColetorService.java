@@ -1,9 +1,9 @@
 package br.ufpi.recicle_ai.domain.service;
 
+import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
 import br.ufpi.recicle_ai.domain.mapper.ColetorMapper;
 import br.ufpi.recicle_ai.domain.model.Coletor;
-import br.ufpi.recicle_ai.domain.model.dto.ColetorDTO;
-import br.ufpi.recicle_ai.domain.model.dto.form.ColetorForm;
+import br.ufpi.recicle_ai.domain.form.ColetorForm;
 import br.ufpi.recicle_ai.domain.repository.ColetorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,28 +25,28 @@ public class ColetorService {
     }
 
     @Transactional(readOnly = true)
-    public List<ColetorDTO> findAll() {
+    public List<AgenteDTO.ColetorDTO> findAll() {
         return coletorRepository.findAll().stream()
                 .map(coletorMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public ColetorDTO findById(Long id) {
+    public AgenteDTO.ColetorDTO findById(Long id) {
         return coletorRepository.findById(id)
                 .map(coletorMapper::toDTO)
                 .orElse(null); // Ou lançar uma exceção
     }
 
     @Transactional
-    public ColetorDTO create(ColetorForm form) {
+    public AgenteDTO.ColetorDTO create(ColetorForm form) {
         Coletor coletor = coletorMapper.toModel(form);
         coletor = coletorRepository.save(coletor);
         return coletorMapper.toDTO(coletor);
     }
 
     @Transactional
-    public ColetorDTO update(Long id, ColetorForm form) {
+    public AgenteDTO.ColetorDTO update(Long id, ColetorForm form) {
         return coletorRepository.findById(id).map(coletor -> {
             // Atualize os campos necessários do coletor aqui
             coletor.setNome(form.getNome());

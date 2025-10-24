@@ -1,6 +1,5 @@
-package br.ufpi.recicle_ai.domain.model.dto.form;
+package br.ufpi.recicle_ai.domain.form;
 
-import br.ufpi.recicle_ai.domain.form.AgenteForm;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -3,6 +3,7 @@ package br.ufpi.recicle_ai.domain.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.ufpi.recicle_ai.domain.model.item.ItemColeta;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;

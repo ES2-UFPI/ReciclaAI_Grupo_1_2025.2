@@ -1,9 +1,9 @@
 package br.ufpi.recicle_ai.domain.service;
 
+import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
 import br.ufpi.recicle_ai.domain.mapper.ReceptorMapper;
 import br.ufpi.recicle_ai.domain.model.Receptor;
-import br.ufpi.recicle_ai.domain.model.dto.ReceptorDTO;
-import br.ufpi.recicle_ai.domain.model.dto.form.ReceptorForm;
+import br.ufpi.recicle_ai.domain.form.ReceptorForm;
 import br.ufpi.recicle_ai.domain.repository.ReceptorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,28 +25,28 @@ public class ReceptorService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReceptorDTO> findAll() {
+    public List<AgenteDTO.ReceptorDTO> findAll() {
         return receptorRepository.findAll().stream()
                 .map(receptorMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public ReceptorDTO findById(Long id) {
+    public AgenteDTO.ReceptorDTO findById(Long id) {
         return receptorRepository.findById(id)
                 .map(receptorMapper::toDTO)
                 .orElse(null); // Ou lançar uma exceção
     }
 
     @Transactional
-    public ReceptorDTO create(ReceptorForm form) {
+    public AgenteDTO.ReceptorDTO create(ReceptorForm form) {
         Receptor receptor = receptorMapper.toModel(form);
         receptor = receptorRepository.save(receptor);
         return receptorMapper.toDTO(receptor);
     }
 
     @Transactional
-    public ReceptorDTO update(Long id, ReceptorForm form) {
+    public AgenteDTO.ReceptorDTO update(Long id, ReceptorForm form) {
         return receptorRepository.findById(id).map(receptor -> {
             // Atualize os campos necessários do receptor aqui
             receptor.setNome(form.getNome());

@@ -1,5 +1,6 @@
-package br.ufpi.recicle_ai.domain.model;
+package br.ufpi.recicle_ai.domain.model.item;
 
+import br.ufpi.recicle_ai.domain.model.EventoColeta;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -26,7 +27,7 @@ public class ItemColeta {
     @ManyToOne
     @JoinColumn(name = "evento_coleta_id", nullable = false)
     @JsonIgnoreProperties("itensColeta") // Evita o loop ItemColeta -> EventoColeta
-    private EventoColeta eventoColeta; 
+    private EventoColeta eventoColeta;
     
     // O itemId pode ser a chave estrangeira para a entidade Itens (de inventário), 
     // se você tiver uma tabela de referência de tipos de material

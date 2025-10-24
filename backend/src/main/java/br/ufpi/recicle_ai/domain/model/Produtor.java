@@ -3,6 +3,7 @@ package br.ufpi.recicle_ai.domain.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufpi.recicle_ai.domain.model.item.ItemInventario;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
@@ -20,7 +21,7 @@ public class Produtor extends Agente {
 
     @OneToMany(mappedBy = "produtor", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("produtor") // <-- Corrigido!
-    private List<Itens> itens = new ArrayList<>();
+    private List<ItemInventario> itens = new ArrayList<>();
 
     public Produtor() {
     }

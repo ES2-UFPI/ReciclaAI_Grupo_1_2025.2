@@ -1,12 +1,11 @@
 package br.ufpi.recicle_ai.service;
 
+import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
 import br.ufpi.recicle_ai.mapper.ProdutorMapper;
 import br.ufpi.recicle_ai.domain.model.Produtor;
-import br.ufpi.recicle_ai.domain.model.dto.ProdutorDTO;
-import br.ufpi.recicle_ai.domain.model.dto.form.ProdutorForm;
+import br.ufpi.recicle_ai.domain.form.ProdutorForm;
 import br.ufpi.recicle_ai.repository.ProdutorRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,28 +20,28 @@ public class ProdutorService {
     private final ProdutorMapper produtorMapper;
 
     @Transactional(readOnly = true)
-    public List<ProdutorDTO> findAll() {
+    public List<AgenteDTO.ProdutorDTO> findAll() {
         return produtorRepository.findAll().stream()
                 .map(produtorMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public ProdutorDTO findById(Long id) {
+    public AgenteDTO.ProdutorDTO findById(Long id) {
         return produtorRepository.findById(id)
                 .map(produtorMapper::toDTO)
                 .orElse(null);
     }
 
     @Transactional
-    public ProdutorDTO create(ProdutorForm form) {
+    public AgenteDTO.ProdutorDTO create(ProdutorForm form) {
         Produtor produtor = produtorMapper.toModel(form);
         produtor = produtorRepository.save(produtor);
         return produtorMapper.toDTO(produtor);
     }
 
     @Transactional
-    public ProdutorDTO update(Long id, ProdutorForm form) {
+    public AgenteDTO.ProdutorDTO update(Long id, ProdutorForm form) {
         return produtorRepository.findById(id).map(produtor -> {
             produtor.setNome(form.getNome());
             produtor.setTipoAgente(form.getTipoAgente());

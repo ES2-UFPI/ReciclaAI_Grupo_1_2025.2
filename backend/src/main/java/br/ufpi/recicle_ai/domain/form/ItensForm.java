@@ -1,11 +1,12 @@
-package br.ufpi.recicle_ai.domain.model.dto;
+package br.ufpi.recicle_ai.domain.form;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ItensDTO {
+public class ItensForm {
+    
     private Long id;
     private String nomeItem;
     private String unidadeItem;

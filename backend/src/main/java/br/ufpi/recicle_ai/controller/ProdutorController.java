@@ -1,9 +1,8 @@
 package br.ufpi.recicle_ai.controller;
 
-import br.ufpi.recicle_ai.domain.model.dto.ItensDTO;
-import br.ufpi.recicle_ai.domain.model.dto.ProdutorDTO;
-import br.ufpi.recicle_ai.domain.model.dto.form.ItensForm;
-import br.ufpi.recicle_ai.domain.model.dto.form.ProdutorForm;
+import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
+import br.ufpi.recicle_ai.domain.form.ItensForm;
+import br.ufpi.recicle_ai.domain.form.ProdutorForm;
 import br.ufpi.recicle_ai.domain.service.ItensService;
 import br.ufpi.recicle_ai.service.ProdutorService;
 import jakarta.validation.Valid;
@@ -28,27 +27,27 @@ public class ProdutorController {
     private final ProdutorService produtorService;
 
     @GetMapping
-    public ResponseEntity<List<ProdutorDTO>> findAll() {
+    public ResponseEntity<List<AgenteDTO.ProdutorDTO>> findAll() {
         return ResponseEntity.ok(produtorService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutorDTO> findById(@PathVariable Long id) {
-        ProdutorDTO dto = produtorService.findById(id);
+    public ResponseEntity<AgenteDTO.ProdutorDTO> findById(@PathVariable Long id) {
+        AgenteDTO.ProdutorDTO dto = produtorService.findById(id);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public ResponseEntity<ProdutorDTO> create(@RequestBody @Valid ProdutorForm form) {
-        ProdutorDTO dto = produtorService.create(form);
+    public ResponseEntity<AgenteDTO.ProdutorDTO> create(@RequestBody @Valid ProdutorForm form) {
+        AgenteDTO.ProdutorDTO dto = produtorService.create(form);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutorDTO> update(@PathVariable Long id, @RequestBody @Valid ProdutorForm form) {
-        ProdutorDTO dto = produtorService.update(id, form);
+    public ResponseEntity<AgenteDTO.ProdutorDTO> update(@PathVariable Long id, @RequestBody @Valid ProdutorForm form) {
+        AgenteDTO.ProdutorDTO dto = produtorService.update(id, form);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 
@@ -59,8 +58,8 @@ public class ProdutorController {
     }
 
     @PostMapping("/{id}/adicionar-item")
-    public ResponseEntity<ItensDTO> addItem(@PathVariable Long id, @RequestBody @Valid ItensForm form) throws NotFoundException {
-        ItensDTO dto;
+    public ResponseEntity<AgenteDTO.ItensDTO> addItem(@PathVariable Long id, @RequestBody @Valid ItensForm form) throws NotFoundException {
+        AgenteDTO.ItensDTO dto;
         boolean isUpdate = produtorService.findItemByIdAndProdutorId(form.getNomeItem(), id);
         
         if (isUpdate) {
@@ -79,8 +78,8 @@ public class ProdutorController {
     }
 
     @GetMapping("/inventario/{id}")
-    public ResponseEntity<List<ItensDTO>> listarInventario(@PathVariable Long id) {
-        List<ItensDTO> itens = itensService.listarItensPorProdutor(id);
+    public ResponseEntity<List<AgenteDTO.ItensDTO>> listarInventario(@PathVariable Long id) {
+        List<AgenteDTO.ItensDTO> itens = itensService.listarItensPorProdutor(id);
 
         // Retorna 200 OK com a lista (mesmo se estiver vazia)
         return ResponseEntity.ok(itens);
