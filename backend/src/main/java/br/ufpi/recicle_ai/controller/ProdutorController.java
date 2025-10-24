@@ -77,4 +77,13 @@ public class ProdutorController {
             return ResponseEntity.created(uri).body(dto);
         }
     }
+
+    @GetMapping("/inventario/{id}")
+    public ResponseEntity<List<ItensDTO>> listarInventario(@PathVariable Long id) {
+        List<ItensDTO> itens = itensService.listarItensPorProdutor(id);
+
+        // Retorna 200 OK com a lista (mesmo se estiver vazia)
+        return ResponseEntity.ok(itens);
+    }
+
 }
