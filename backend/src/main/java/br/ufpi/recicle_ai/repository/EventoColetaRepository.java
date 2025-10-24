@@ -1,4 +1,4 @@
-package br.ufpi.recicle_ai.domain.repository;
+package br.ufpi.recicle_ai.repository;
 
 
 import java.util.List;

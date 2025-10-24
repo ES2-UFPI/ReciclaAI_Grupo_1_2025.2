@@ -1,6 +1,7 @@
-package br.ufpi.recicle_ai.domain.mapper;
+package br.ufpi.recicle_ai.mapper;
 
 import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
+import br.ufpi.recicle_ai.domain.dto.EventoColetaResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -11,7 +12,7 @@ public interface EventoColetaMapper {
 
     EventoColetaMapper INSTANCE = Mappers.getMapper(EventoColetaMapper.class);
 
-    AgenteDTO.EventoColetaResponseDTO toDTO(EventoColeta evento);
+    EventoColetaResponseDTO toDTO(EventoColeta evento);
 }
 
    

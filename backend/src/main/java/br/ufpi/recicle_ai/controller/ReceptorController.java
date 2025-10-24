@@ -1,8 +1,8 @@
 package br.ufpi.recicle_ai.controller;
 
-import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
+import br.ufpi.recicle_ai.domain.dto.ReceptorDTO;
 import br.ufpi.recicle_ai.domain.form.ReceptorForm;
-import br.ufpi.recicle_ai.domain.service.ReceptorService;
+import br.ufpi.recicle_ai.service.ReceptorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,27 +24,27 @@ public class ReceptorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AgenteDTO.ReceptorDTO>> findAll() {
+    public ResponseEntity<List<ReceptorDTO>> findAll() {
         return ResponseEntity.ok(receptorService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AgenteDTO.ReceptorDTO> findById(@PathVariable Long id) {
-        AgenteDTO.ReceptorDTO dto = receptorService.findById(id);
+    public ResponseEntity<ReceptorDTO> findById(@PathVariable Long id) {
+        ReceptorDTO dto = receptorService.findById(id);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public ResponseEntity<AgenteDTO.ReceptorDTO> create(@RequestBody @Valid ReceptorForm form) {
-        AgenteDTO.ReceptorDTO dto = receptorService.create(form);
+    public ResponseEntity<ReceptorDTO> create(@RequestBody @Valid ReceptorForm form) {
+        ReceptorDTO dto = receptorService.create(form);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AgenteDTO.ReceptorDTO> update(@PathVariable Long id, @RequestBody @Valid ReceptorForm form) {
-        AgenteDTO.ReceptorDTO dto = receptorService.update(id, form);
+    public ResponseEntity<ReceptorDTO> update(@PathVariable Long id, @RequestBody @Valid ReceptorForm form) {
+        ReceptorDTO dto = receptorService.update(id, form);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 

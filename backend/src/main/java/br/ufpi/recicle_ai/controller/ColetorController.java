@@ -1,8 +1,8 @@
 package br.ufpi.recicle_ai.controller;
 
-import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
+import br.ufpi.recicle_ai.domain.dto.ColetorDTO;
 import br.ufpi.recicle_ai.domain.form.ColetorForm;
-import br.ufpi.recicle_ai.domain.service.ColetorService;
+import br.ufpi.recicle_ai.service.ColetorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,27 +24,27 @@ public class ColetorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AgenteDTO.ColetorDTO>> findAll() {
+    public ResponseEntity<List<ColetorDTO>> findAll() {
         return ResponseEntity.ok(coletorService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AgenteDTO.ColetorDTO> findById(@PathVariable Long id) {
-        AgenteDTO.ColetorDTO dto = coletorService.findById(id);
+    public ResponseEntity<ColetorDTO> findById(@PathVariable Long id) {
+        ColetorDTO dto = coletorService.findById(id);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public ResponseEntity<AgenteDTO.ColetorDTO> create(@RequestBody @Valid ColetorForm form) {
-        AgenteDTO.ColetorDTO dto = coletorService.create(form);
+    public ResponseEntity<ColetorDTO> create(@RequestBody @Valid ColetorForm form) {
+        ColetorDTO dto = coletorService.create(form);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AgenteDTO.ColetorDTO> update(@PathVariable Long id, @RequestBody @Valid ColetorForm form) {
-        AgenteDTO.ColetorDTO dto = coletorService.update(id, form);
+    public ResponseEntity<ColetorDTO> update(@PathVariable Long id, @RequestBody @Valid ColetorForm form) {
+        ColetorDTO dto = coletorService.update(id, form);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 

@@ -1,4 +1,4 @@
-package br.ufpi.recicle_ai.domain.repository;
+package br.ufpi.recicle_ai.repository;
 
 import br.ufpi.recicle_ai.domain.model.Coletor;
 import org.springframework.data.jpa.repository.JpaRepository;
