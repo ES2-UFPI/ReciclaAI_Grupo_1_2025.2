@@ -1,113 +1,74 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { InventoryCard } from '@/components/inventory/InventoryCard';
-import { InventoryStats } from '@/components/inventory/InventoryStats';
-import { useInventory } from '@/contexts/InventoryContext';
-import { categoryLabels } from '@/types/inventory';
-import { Plus, Search, Filter } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Search } from 'lucide-react';
+import { listarInventario } from '@/services/inventoryService';
+import { InventoryItem } from '@/types/api';
 
 const InventoryList = () => {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const { items } = useInventory();
+  const [items, setItems] = useState<InventoryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredItems = items.filter((item) => {
-    const term = searchTerm.trim().toLowerCase();
-    const matchesSearch = term === '' || 
-      categoryLabels[item.category].toLowerCase().includes(term) ||
-      String(item.quantity).toLowerCase().includes(term) ||
-      (item.estimatedValue !== undefined && String(item.estimatedValue).toLowerCase().includes(term));
-    const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
-    return matchesSearch && matchesCategory;
-  });
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const mockPessoaId = 1;
+        const mockTipoPessoa = 'PRODUTOR' as const;
+        
+        const data = await listarInventario(mockPessoaId, mockTipoPessoa);
+        setItems(data);
+      } catch (err) {
+        setError('Erro ao carregar inventário');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInventory();
+  }, []);
+
+  if (loading) return <div>Carregando inventário...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-gradient-eco text-primary-foreground py-8 px-4 shadow-soft">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Inventário de Reciclagem</h1>
-              <p className="text-primary-foreground/90">
-                Gerencie seus materiais recicláveis
-              </p>
-            </div>
-            <Button
-              onClick={() => navigate('/inventory/add')}
-              size="lg"
-              className="bg-white text-primary hover:bg-white/90 shadow-md"
-            >
-              <Plus className="mr-2 h-5 w-5" />
-              Adicionar Item
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="max-w-5xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
+          Inventário de Reciclagem
+        </h1>
+        <p className="text-muted-foreground">
+          Gerencie seus materiais recicláveis
+        </p>
+      </div>
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Stats */}
-        <div className="mb-8">
-          <InventoryStats items={filteredItems} />
-        </div>
-
-        {/* Filters */}
-        <div className="mb-6 flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-            <Input
-              placeholder="Buscar itens..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
+      {items.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {items.map((inventoryItem) => (
+            <InventoryCard
+              key={inventoryItem.id}
+              item={inventoryItem}
+              onUpdate={(updatedItem) => {
+                setItems(items.map(item => 
+                  item.id === updatedItem.id ? updatedItem : item
+                ));
+              }}
             />
-          </div>
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-full md:w-[200px]">
-              <Filter className="mr-2 h-4 w-4" />
-              <SelectValue placeholder="Categoria" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas</SelectItem>
-              <SelectItem value="plastic">Plástico</SelectItem>
-              <SelectItem value="paper">Papel</SelectItem>
-              <SelectItem value="glass">Vidro</SelectItem>
-              <SelectItem value="metal">Metal</SelectItem>
-              <SelectItem value="electronic">Eletrônico</SelectItem>
-              <SelectItem value="organic">Orgânico</SelectItem>
-            </SelectContent>
-          </Select>
+          ))}
         </div>
-
-        {/* Inventory Grid */}
-        {filteredItems.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredItems.map((item) => (
-              <InventoryCard key={item.id} item={item} />
-            ))}
+      ) : (
+        <div className="text-center py-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
+            <Search className="w-8 h-8 text-muted-foreground" />
           </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
-              <Search className="w-8 h-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Nenhum item encontrado</h3>
-            <p className="text-muted-foreground mb-4">
-              Tente ajustar seus filtros de busca
-            </p>
-          </div>
-        )}
-      </main>
+          <h3 className="text-lg font-semibold mb-2">Nenhum item encontrado</h3>
+          <p className="text-muted-foreground mb-4">
+            Seu inventário está vazio
+          </p>
+        </div>
+      )}
     </div>
   );
 };
