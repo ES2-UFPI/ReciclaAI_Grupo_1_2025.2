@@ -36,3 +36,68 @@ export async function buscarColetasPorBairro(
   
   return response.json();
 }
+
+export async function criarEventoColeta(
+  coletaId: number,
+  produtorId: number
+): Promise<EventoColeta> {
+  const response = await fetch(`${API_BASE_URL}/eventos-coleta`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ coletaId, produtorId }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw {
+      status: response.status,
+      message: data.message,
+      error: data.error
+    };
+  }
+
+  return data;
+}
+
+export async function adicionarItemEventoColeta(
+  eventoColetaId: number,
+  itemId: number,
+  quantidade: number
+): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/itens-evento-coleta`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+      eventoColetaId, 
+      itemId, 
+      quantidade 
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw {
+      status: response.status,
+      message: data.message,
+      error: data.error
+    };
+  }
+
+  return data;
+}
+
+export async function deletarEventoColeta(id: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/eventos-coleta/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error('Erro ao deletar evento de coleta');
+  }
+}

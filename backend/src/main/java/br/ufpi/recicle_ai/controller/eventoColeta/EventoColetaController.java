@@ -31,4 +31,10 @@ public class EventoColetaController {
     public ResponseEntity<List<EventoColetaDTO>> findAllByProdutorId(@PathVariable Long id) {
         return ResponseEntity.ok(eventoColetaService.findAllByProdutorId(id));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        eventoColetaService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

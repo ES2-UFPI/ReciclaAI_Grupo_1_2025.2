@@ -4,20 +4,11 @@ import { TrendingUp, Pencil } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { atualizarQuantidadeInventario } from '@/services/inventoryService';
-
-interface InventoryItemData {
-  id: number;
-  quantidade: number;
-  item: {
-    id: number;
-    nome: string;
-    unidade: string;
-  };
-}
+import { InventoryItem } from '@/types/api';
 
 interface InventoryCardProps {
-  item: InventoryItemData;
-  onUpdate?: (updatedItem: InventoryItemData) => void;
+  item: InventoryItem;
+  onUpdate?: (updatedItem: InventoryItem) => void;
 }
 
 export const InventoryCard = ({ item, onUpdate }: InventoryCardProps) => {
