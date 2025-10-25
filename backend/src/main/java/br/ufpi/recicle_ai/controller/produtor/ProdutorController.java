@@ -58,16 +58,4 @@ public class ProdutorController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/adicionar-item-inventario")
-    public ResponseEntity<ItemInventarioDTO> addItem(@RequestBody @Valid ItemInventarioForm form) {
-        form.setTipoPessoa(TipoPessoaEnum.PRODUTOR);
-        return ResponseEntity.ok(itemInventarioService.criarItemInventario(form));
-    }
-
-    @GetMapping("/{id}/inventario")
-    public ResponseEntity<List<ItemInventarioDTO>> listarInventario(@PathVariable Long id) {
-        List<ItemInventarioDTO> itens = itemInventarioService.listarItensPorPessoa(id, TipoPessoaEnum.PRODUTOR);
-        return ResponseEntity.ok(itens);
-    }
-
 }

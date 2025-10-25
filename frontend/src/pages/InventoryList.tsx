@@ -14,8 +14,11 @@ const InventoryList = () => {
   useEffect(() => {
     const fetchInventory = async () => {
       try {
-        const produtorId = 1;
-        const data = await listarInventario(produtorId);
+        // TODO: Get pessoaId and tipoPessoa from JWT token
+        const mockPessoaId = 1;
+        const mockTipoPessoa = 'PRODUTOR' as const;
+        
+        const data = await listarInventario(mockPessoaId, mockTipoPessoa);
         setItems(data);
       } catch (err) {
         setError('Erro ao carregar inventário');
@@ -53,6 +56,11 @@ const InventoryList = () => {
               <InventoryCard
                 key={inventoryItem.id}
                 item={inventoryItem}
+                onUpdate={(updatedItem) => {
+                  setItems(items.map(item => 
+                    item.id === updatedItem.id ? updatedItem : item
+                  ));
+                }}
               />
             ))}
           </div>

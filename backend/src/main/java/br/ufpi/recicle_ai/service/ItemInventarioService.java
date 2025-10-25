@@ -2,6 +2,7 @@ package br.ufpi.recicle_ai.service;
 
 import br.ufpi.recicle_ai.domain.dto.item.ItemInventarioDTO;
 import br.ufpi.recicle_ai.domain.form.item.ItemInventarioForm;
+import br.ufpi.recicle_ai.domain.form.item.ItemInventarioUpdateForm;
 import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 import br.ufpi.recicle_ai.domain.model.item.Item;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,15 @@ public class ItemInventarioService {
         return itens.stream()
                 .map(itemInventarioMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ItemInventarioDTO atualizarQuantidade(Long itemInventarioId, ItemInventarioUpdateForm form) {
+        ItemInventario itemInventario = itemInventarioRepository.findById(itemInventarioId)
+                .orElseThrow(() -> new RuntimeException("Item do inventário não encontrado!"));
+
+        itemInventario.setQuantidade(form.getQuantidade());
+        ItemInventario itemSalvo = itemInventarioRepository.save(itemInventario);
+        return itemInventarioMapper.toDTO(itemSalvo);
     }
 }
