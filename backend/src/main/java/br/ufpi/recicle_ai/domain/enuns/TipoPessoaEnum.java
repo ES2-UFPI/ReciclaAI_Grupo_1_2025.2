@@ -1,4 +1,4 @@
-package br.ufpi.recicle_ai.domain.model;
+package br.ufpi.recicle_ai.domain.enuns;
 
 public enum TipoPessoaEnum {
     PRODUTOR,

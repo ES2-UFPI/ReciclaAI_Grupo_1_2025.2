@@ -1,14 +1,17 @@
-package br.ufpi.recicle_ai.domain.dto;
+package br.ufpi.recicle_ai.domain.dto.coleta;
 
-import lombok.Builder;
+import br.ufpi.recicle_ai.domain.dto.ColetorDTO;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Builder
-public class EventoColetaResponseDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ColetaDTO {
     private Long id;
     private ColetorDTO coletor;
     private LocalDateTime dataInicio;

@@ -1,6 +1,6 @@
 package br.ufpi.recicle_ai.domain.model.item;
 
-import br.ufpi.recicle_ai.domain.model.TipoPessoaEnum;
+import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

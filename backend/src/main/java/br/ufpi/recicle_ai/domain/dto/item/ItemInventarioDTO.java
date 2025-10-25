@@ -1,6 +1,6 @@
-package br.ufpi.recicle_ai.domain.dto;
+package br.ufpi.recicle_ai.domain.dto.item;
 
-import br.ufpi.recicle_ai.domain.model.TipoPessoaEnum;
+import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -35,7 +35,13 @@ public class ColetorService {
     public ColetorDTO findById(Long id) {
         return coletorRepository.findById(id)
                 .map(coletorMapper::toDTO)
-                .orElse(null); // Ou lançar uma exceção
+                .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public Coletor findEntityById(Long id) {
+        return coletorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Coletor não encontrado!"));
     }
 
     @Transactional
@@ -48,14 +54,13 @@ public class ColetorService {
     @Transactional
     public ColetorDTO update(Long id, ColetorForm form) {
         return coletorRepository.findById(id).map(coletor -> {
-            // Atualize os campos necessários do coletor aqui
             coletor.setNome(form.getNome());
             coletor.setTipoAgente(form.getTipoAgente());
             coletor.setCpf(form.getCpf());
             coletor.setCnpj(form.getCnpj());
             coletor = coletorRepository.save(coletor);
             return coletorMapper.toDTO(coletor);
-        }).orElse(null); // Ou lançar uma exceção
+        }).orElse(null);
     }
 
     @Transactional

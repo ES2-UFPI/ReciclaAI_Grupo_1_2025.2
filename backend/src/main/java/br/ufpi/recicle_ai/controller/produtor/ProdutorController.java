@@ -1,16 +1,15 @@
-package br.ufpi.recicle_ai.controller;
+package br.ufpi.recicle_ai.controller.produtor;
 
-import br.ufpi.recicle_ai.domain.dto.ItemInventarioDTO;
+import br.ufpi.recicle_ai.domain.dto.item.ItemInventarioDTO;
 import br.ufpi.recicle_ai.domain.dto.ProdutorDTO;
-import br.ufpi.recicle_ai.domain.form.ItemInventarioForm;
+import br.ufpi.recicle_ai.domain.form.item.ItemInventarioForm;
 import br.ufpi.recicle_ai.domain.form.ProdutorForm;
-import br.ufpi.recicle_ai.domain.model.TipoPessoaEnum;
+import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 import br.ufpi.recicle_ai.service.ItemInventarioService;
 import br.ufpi.recicle_ai.service.ProdutorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

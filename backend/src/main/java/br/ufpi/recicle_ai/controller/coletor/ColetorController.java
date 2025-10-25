@@ -1,4 +1,4 @@
-package br.ufpi.recicle_ai.controller;
+package br.ufpi.recicle_ai.controller.coletor;
 
 import br.ufpi.recicle_ai.domain.dto.ColetorDTO;
 import br.ufpi.recicle_ai.domain.form.ColetorForm;

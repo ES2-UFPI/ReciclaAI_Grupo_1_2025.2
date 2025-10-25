@@ -1,8 +1,8 @@
 package br.ufpi.recicle_ai.service;
 
-import br.ufpi.recicle_ai.domain.dto.ItemInventarioDTO;
-import br.ufpi.recicle_ai.domain.form.ItemInventarioForm;
-import br.ufpi.recicle_ai.domain.model.TipoPessoaEnum;
+import br.ufpi.recicle_ai.domain.dto.item.ItemInventarioDTO;
+import br.ufpi.recicle_ai.domain.form.item.ItemInventarioForm;
+import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 import br.ufpi.recicle_ai.domain.model.item.Item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

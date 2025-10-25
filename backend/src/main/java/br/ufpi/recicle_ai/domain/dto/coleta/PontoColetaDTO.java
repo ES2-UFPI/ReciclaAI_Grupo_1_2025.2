@@ -1,4 +1,4 @@
-package br.ufpi.recicle_ai.domain.dto;
+package br.ufpi.recicle_ai.domain.dto.coleta;
 
 import lombok.Builder;
 import lombok.Data;

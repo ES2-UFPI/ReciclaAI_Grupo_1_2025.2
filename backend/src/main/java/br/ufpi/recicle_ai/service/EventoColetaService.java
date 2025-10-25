@@ -1,40 +1,53 @@
 package br.ufpi.recicle_ai.service;
 
+import br.ufpi.recicle_ai.domain.dto.eventoColeta.EventoColetaDTO;
+import br.ufpi.recicle_ai.domain.form.eventoColeta.EventoColetaForm;
+import br.ufpi.recicle_ai.domain.model.coleta.Coleta;
+import br.ufpi.recicle_ai.domain.model.eventoColeta.EventoColeta;
+import br.ufpi.recicle_ai.domain.model.Produtor;
+import br.ufpi.recicle_ai.domain.enuns.StatusEventoColetaEnum;
+import br.ufpi.recicle_ai.mapper.EventoColetaMapper;
+import br.ufpi.recicle_ai.repository.EventoColetaRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.ufpi.recicle_ai.domain.dto.AgenteDTO;
-import br.ufpi.recicle_ai.domain.dto.EventoColetaResponseDTO;
-import org.springframework.stereotype.Service;
-
-import br.ufpi.recicle_ai.mapper.EventoColetaMapper;
-import br.ufpi.recicle_ai.domain.model.EventoColeta;
-import br.ufpi.recicle_ai.repository.EventoColetaRepository;
-
 @Service
+@RequiredArgsConstructor
 public class EventoColetaService {
 
-    private final EventoColetaRepository repository;
-    // Assumindo que você tem um Mapper (ex: MapStruct, ou manual)
-    private final EventoColetaMapper mapper; 
+    private final EventoColetaRepository eventoColetaRepository;
+    private final ColetaService coletaService;
+    private final ProdutorService produtorService;
+    private final EventoColetaMapper eventoColetaMapper;
 
-    public EventoColetaService(EventoColetaRepository repository, EventoColetaMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper; // Injeção do Mapper (substitua por seu próprio Mapper)
+    @Transactional
+    public EventoColetaDTO create(EventoColetaForm form) {
+        Coleta coleta = coletaService.findEntityById(form.getColetaId());
+        Produtor produtor = produtorService.findEntityById(form.getProdutorId());
+
+        EventoColeta eventoColeta = eventoColetaMapper.toModel(form);
+        eventoColeta.setColeta(coleta);
+        eventoColeta.setProdutor(produtor);
+        eventoColeta.setStatus(StatusEventoColetaEnum.AGENDADA);
+
+        eventoColeta = eventoColetaRepository.save(eventoColeta);
+        return eventoColetaMapper.toDTO(eventoColeta);
     }
 
-    public List<EventoColetaResponseDTO> buscarEventosPorBairro(String bairro) {
-        if (bairro == null || bairro.trim().isEmpty()) {
-            // Em um ambiente real, você pode lançar uma exceção 400 Bad Request
-            throw new IllegalArgumentException("O nome do bairro não pode ser vazio.");
-        }
-        
-        List<EventoColeta> eventos = repository.findByPontoColeta_Bairro(bairro);
-        return null;
-        // Conversão Entity -> DTO
-//        return eventos.stream()
-//                      .map(mapper::toDTO) // O 'mapper' faria a conversão completa
-//                      .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public EventoColeta findEntityById(Long id) {
+        return eventoColetaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Evento de Coleta não encontrado!"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventoColetaDTO> findAllByProdutorId(Long produtorId) {
+        return eventoColetaRepository.findAllByProdutorId(produtorId).stream()
+                .map(eventoColetaMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

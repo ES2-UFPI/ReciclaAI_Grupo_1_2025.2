@@ -1,4 +1,4 @@
-package br.ufpi.recicle_ai.controller;
+package br.ufpi.recicle_ai.controller.receptor;
 
 import br.ufpi.recicle_ai.domain.dto.ReceptorDTO;
 import br.ufpi.recicle_ai.domain.form.ReceptorForm;

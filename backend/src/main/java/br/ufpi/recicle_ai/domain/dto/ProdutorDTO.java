@@ -9,5 +9,5 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ProdutorDTO extends AgenteDTO {
-    private List<ItemInventario> itens;
+
 }

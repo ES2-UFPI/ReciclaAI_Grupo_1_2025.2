@@ -1,6 +1,6 @@
 package br.ufpi.recicle_ai.repository;
 
-import br.ufpi.recicle_ai.domain.model.TipoPessoaEnum;
+import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 import br.ufpi.recicle_ai.domain.model.item.ItemInventario;
 
 import java.util.List;

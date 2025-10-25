@@ -33,6 +33,12 @@ public class ProdutorService {
                 .orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public Produtor findEntityById(Long id) {
+        return produtorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produtor não encontrado!"));
+    }
+
     @Transactional
     public ProdutorDTO create(ProdutorForm form) {
         Produtor produtor = produtorMapper.toModel(form);
