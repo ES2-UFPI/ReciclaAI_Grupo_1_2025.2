@@ -27,4 +27,10 @@ public class ColetaService {
         return coletaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Coleta não encontrada!"));
     }
+
+    @Transactional(readOnly = true)
+    public Page<ColetaDTO> findByBairro(String bairro, Pageable pageable) {
+        return coletaRepository.findAllByPontoColetaBairroContainingIgnoreCase(bairro, pageable)
+                .map(coletaMapper::toDTO);
+    }
 }
