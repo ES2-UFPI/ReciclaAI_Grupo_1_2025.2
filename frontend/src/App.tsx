@@ -17,32 +17,37 @@ import { InventoryProvider } from "@/contexts/InventoryContext";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <InventoryProvider>
-          <Routes>
-            <Route path="/" element={<Navigate to="/agendar-coleta" replace />} />
-            <Route element={<DashboardLayout />}>
-              <Route path="/agendar-coleta" element={<AgendarColeta />} />
-              <Route path="/declaracao-materiais" element={<DeclaracaoMateriais />} />
-              <Route path="/inventario" element={<InventoryList />} />
-              <Route path="/inventory" element={<InventoryList />} />
-              <Route path="/inventory/add" element={<AddInventoryItem />} />
-              <Route path="/historico" element={<Historico />} />
-              <Route path="/relatorios" element={<Relatorios />} />
-              <Route path="/moedas" element={<Moedas />} />
-            </Route>
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </InventoryProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster position="top-left" />
+        <Sonner />
+        <BrowserRouter>
+          <InventoryProvider>
+            <Routes>
+              <Route path="/" element={<Navigate to="/agendar-coleta" replace />} />
+              <Route element={<DashboardLayout />}>
+                <Route path="/agendar-coleta" element={<AgendarColeta />} />
+                <Route
+                  path="/declaracao-materiais"
+                  element={<DeclaracaoMateriais />}
+                />
+                <Route path="/inventario" element={<InventoryList />} />
+                <Route path="/inventory" element={<InventoryList />} />
+                <Route path="/inventory/add" element={<AddInventoryItem />} />
+                <Route path="/historico" element={<Historico />} />
+                <Route path="/relatorios" element={<Relatorios />} />
+                <Route path="/moedas" element={<Moedas />} />
+              </Route>
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </InventoryProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;
