@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface ColetaRepository extends JpaRepository<Coleta, Long> {
     Page<Coleta> findAllByPontoColetaBairroContainingIgnoreCase(String bairro, Pageable pageable);
+    Page<Coleta> findAllByColetor_id(long id, Pageable pageable);
 }

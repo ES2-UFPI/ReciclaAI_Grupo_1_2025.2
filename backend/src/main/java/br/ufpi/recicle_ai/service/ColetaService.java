@@ -33,4 +33,10 @@ public class ColetaService {
         return coletaRepository.findAllByPontoColetaBairroContainingIgnoreCase(bairro, pageable)
                 .map(coletaMapper::toDTO);
     }
+
+    @Transactional(readOnly = true)
+    public Page<ColetaDTO> findByColetor(long id, Pageable pageable) {
+        return coletaRepository.findAllByColetor_id(id, pageable)
+                .map(coletaMapper::toDTO);
+    }
 }
