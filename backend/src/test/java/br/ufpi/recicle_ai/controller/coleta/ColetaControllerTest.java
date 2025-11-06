@@ -6,6 +6,8 @@ import br.ufpi.recicle_ai.domain.dto.coleta.PontoColetaDTO;
 import br.ufpi.recicle_ai.domain.form.coleta.ColetaForm;
 import br.ufpi.recicle_ai.service.ColetaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,5 +87,52 @@ public class ColetaControllerTest {
                 .andExpect(jsonPath("$.pontoColeta.logradouro").value("Rua Álvaro Mendes"))
                 .andExpect(jsonPath("$.itensColeta").isArray())
                 .andExpect(jsonPath("$.itensColeta").isEmpty());
+    }
+    @Test
+    @DisplayName("Deve lançar ServletException quando serviço lançar exceção")
+    void createColetas_serviceThrowsException_throwsServletException() throws Exception {
+        Mockito.when(coletaService.createColetas(any(ColetaForm.class)))
+                .thenThrow(new RuntimeException("Erro interno ao salvar coleta"));
+
+        String requestJson = "{\n" +
+                "  \"coletorId\": 2,\n" +
+                "  \"dataInicio\": \"" + LocalDateTime.now().plusDays(1) + "\",\n" +
+                "  \"dataFim\": \"" + LocalDateTime.now().plusDays(1).plusHours(3) + "\",\n" +
+                "  \"pontoColeta\": {\n" +
+                "    \"logradouro\": \"Rua A\",\n" +
+                "    \"numero\": \"10\",\n" +
+                "    \"bairro\": \"Centro\",\n" +
+                "    \"cep\": \"64000-000\"\n" +
+                "  }\n" +
+                "}";
+
+        org.junit.jupiter.api.Assertions.assertThrows(
+                jakarta.servlet.ServletException.class,
+                () -> mockMvc.perform(post("/coletas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                        .andReturn()
+        );
+    }
+
+    @Test
+    @DisplayName("Deve retornar 400 Bad Request quando datas não forem futuras")
+    void createColetas_invalidDates_returnsBadRequest() throws Exception {
+        String requestJson = "{\n" +
+                "  \"coletorId\": 2,\n" +
+                "  \"dataInicio\": \"2024-10-30T09:00:00\",\n" +
+                "  \"dataFim\": \"2024-10-30T12:00:00\",\n" +
+                "  \"pontoColeta\": {\n" +
+                "    \"logradouro\": \"Rua Teste\",\n" +
+                "    \"numero\": \"100\",\n" +
+                "    \"bairro\": \"Centro\",\n" +
+                "    \"cep\": \"64000-000\"\n" +
+                "  }\n" +
+                "}";
+
+        mockMvc.perform(post("/coletas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest());
     }
 }
