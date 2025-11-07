@@ -101,3 +101,13 @@ export async function deletarEventoColeta(id: number): Promise<void> {
     throw new Error('Erro ao deletar evento de coleta');
   }
 }
+
+export async function listarColetasAgendadasColetor(coletorId: number): Promise<EventoColeta[]> {
+  const response = await fetch(`${API_BASE_URL}/eventos-coleta/coletor/${coletorId}`);
+  
+  if (!response.ok) {
+    throw new Error('Erro ao carregar coletas agendadas');
+  }
+  
+  return response.json();
+}
