@@ -11,4 +11,6 @@ public interface EventoColetaRepository extends JpaRepository<EventoColeta, Long
     List<EventoColeta> findAllByProdutorId(Long produtorId);
 
     boolean existsByColetaIdAndProdutorId(Long coletaId, Long produtorId);
+
+    List<EventoColeta> findAllByColetaColetorId(Long coletorId);
 }
