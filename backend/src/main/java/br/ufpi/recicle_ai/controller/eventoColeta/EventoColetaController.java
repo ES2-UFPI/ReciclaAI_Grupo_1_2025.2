@@ -42,4 +42,10 @@ public class EventoColetaController {
         eventoColetaService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/confirmar")
+    public ResponseEntity<EventoColetaDTO> confirmarEvento(@PathVariable Long id) {
+        EventoColetaDTO dto = eventoColetaService.confirmarEvento(id);
+        return ResponseEntity.ok(dto);
+    }
 }

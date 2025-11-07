@@ -6,6 +6,7 @@ import br.ufpi.recicle_ai.domain.model.Coletor;
 import br.ufpi.recicle_ai.domain.model.Produtor;
 import br.ufpi.recicle_ai.domain.model.coleta.Coleta;
 import br.ufpi.recicle_ai.domain.model.eventoColeta.EventoColeta;
+import br.ufpi.recicle_ai.exception.RegraDeNegocioException;
 import br.ufpi.recicle_ai.mapper.EventoColetaMapper;
 import br.ufpi.recicle_ai.repository.EventoColetaRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,8 +20,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -147,5 +151,37 @@ class EventoColetaServiceTest {
         // Assert
         verify(eventoColetaRepository, times(1)).findAllByColetaColetorId(coletorId);
         verify(eventoColetaRepository, times(1)).findAllByColetaColetorId(eq(42L));
+    }
+
+    @Test
+    @DisplayName("Deve confirmar o evento com sucesso quando o status for AGENDADA")
+    void confirmarEvento_ComStatusAgendada_DeveMudarStatusParaConcluida() {
+        // Arrange
+        when(eventoColetaRepository.findById(1L)).thenReturn(Optional.of(eventoColeta1));
+        when(eventoColetaMapper.toDTO(eventoColeta1)).thenReturn(eventoColetaDTO2);
+
+        // Act
+        EventoColetaDTO resultado = eventoColetaService.confirmarEvento(1L);
+
+        assertThat(resultado).isNotNull();
+        verify(eventoColetaRepository).findById(1L);
+        verify(eventoColetaRepository).save(eventoColeta1);
+        assertEquals(StatusEventoColetaEnum.CONCLUIDA, eventoColeta1.getStatus());
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao tentar confirmar evento já CONCLUIDA")
+    void confirmarEvento_ComStatusConcluida_DeveLancarExcecao() {
+        // Arrange
+        eventoColeta1.setStatus(StatusEventoColetaEnum.CONCLUIDA);
+        when(eventoColetaRepository.findById(1L)).thenReturn(Optional.of(eventoColeta1));
+
+        // Act & Assert
+        RegraDeNegocioException exception = assertThrows(RegraDeNegocioException.class, () -> {
+            eventoColetaService.confirmarEvento(1L);
+        });
+
+        assertEquals("Este evento de coleta já está concluído.", exception.getMessage());
+        verify(eventoColetaRepository, never()).save(any(EventoColeta.class));
     }
 }
