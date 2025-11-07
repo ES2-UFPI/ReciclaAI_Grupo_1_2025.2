@@ -55,8 +55,8 @@ public class ColetaControllerTest {
         ColetaDTO retorno = new ColetaDTO();
         retorno.setId(1L);
         retorno.setColetor(coletor);
-        retorno.setDataInicio(LocalDateTime.parse("2025-10-30T09:00:00"));
-        retorno.setDataFim(LocalDateTime.parse("2025-10-30T12:00:00"));
+        retorno.setDataInicio(LocalDateTime.parse("2025-11-30T09:00:00"));
+        retorno.setDataFim(LocalDateTime.parse("2025-11-30T12:00:00"));
         retorno.setPontoColeta(ponto);
         retorno.setItensColeta(Collections.emptyList());
 
@@ -65,8 +65,8 @@ public class ColetaControllerTest {
         // Request body as described in the issue (fields accepted by controller/service)
         String requestJson = "{\n" +
                 "  \"coletorId\": 2,\n" +
-                "  \"dataInicio\": \"2025-11-09T09:00:00\",\n" +
-                "  \"dataFim\": \"2025-11-10T12:00:00\",\n" +
+                "  \"dataInicio\": \"2025-11-30T09:00:00\",\n" +
+                "  \"dataFim\": \"2025-11-30T12:00:00\",\n" +
                 "  \"pontoColeta\": {\n" +
                 "    \"logradouro\": \"Rua Álvaro Mendes\",\n" +
                 "    \"numero\": \"74\",\n" +
