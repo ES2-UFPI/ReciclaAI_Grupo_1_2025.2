@@ -15,6 +15,9 @@ import InventoryList from "./pages/InventoryList";
 import AddInventoryItem from "./pages/AddInventoryItem";
 import { InventoryProvider } from "@/contexts/InventoryContext";
 import ColetasAgendadasColetor from "./pages/ColetasAgendadasColetor";
+import CriarColeta from "./pages/CriarColeta";
+import InformarMateriaisColeta from "./pages/InformarMateriaisColeta";
+import FormularioColeta from "./pages/FormularioColeta";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +41,12 @@ function App() {
                 <Route path="/inventario" element={<InventoryList />} />
                 <Route path="/inventory" element={<InventoryList />} />
                 <Route path="/inventory/add" element={<AddInventoryItem />} />
+                <Route path="/criar-coleta" element={<CriarColeta />} />
+                <Route path="formulario-coleta" element={<FormularioColeta />} />
+                <Route
+                  path="informar-materiais-coleta"
+                  element={<InformarMateriaisColeta />}
+                />
                 <Route path="/historico" element={<Historico />} />
                 <Route path="/relatorios" element={<Relatorios />} />
                 <Route path="/moedas" element={<Moedas />} />

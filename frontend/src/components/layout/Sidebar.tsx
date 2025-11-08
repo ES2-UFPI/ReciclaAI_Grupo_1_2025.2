@@ -1,4 +1,4 @@
-import { Calendar, Package, Clock, BarChart3, Coins } from "lucide-react";
+import { Calendar, Package, Clock, BarChart3, Coins, PlusCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -6,6 +6,7 @@ const menuItems = [
   { icon: Calendar, label: "Agendar Coleta", path: "/agendar-coleta" },
   { icon: Package, label: "Inventário", path: "/inventario" },
   { icon: Calendar, label: "Coletas Agendadas", path: "/coletas-agendadas" },
+  { icon: PlusCircle, label: "Criar Coleta", path: "/criar-coleta" },
   { icon: Clock, label: "Histórico", path: "/historico" },
   { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
   { icon: Coins, label: "Moedas Verdes", path: "/moedas" },
