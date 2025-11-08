@@ -1,6 +1,7 @@
 package br.ufpi.recicle_ai.service;
 
 import br.ufpi.recicle_ai.domain.dto.eventoColeta.ItemEventoColetaDTO;
+import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 import br.ufpi.recicle_ai.domain.form.eventoColeta.ItemEventoColetaForm;
 import br.ufpi.recicle_ai.domain.model.eventoColeta.EventoColeta;
 import br.ufpi.recicle_ai.domain.model.item.Item;
@@ -38,7 +39,7 @@ public class ItemEventoColetaService {
         // 2. Debita a quantidade do inventário do produtor
         Long produtorId = eventoColeta.getProdutor().getId();
         BigDecimal quantidadeParaDebitar = new BigDecimal(form.getQuantidade());
-        itemInventarioService.debitarDoInventario(produtorId, item.getId(), quantidadeParaDebitar);
+        itemInventarioService.debitarDoInventario(produtorId, TipoPessoaEnum.PRODUTOR, item.getId(), quantidadeParaDebitar);
 
         // 3. Cria o registro do item no evento de coleta
         ItemEventoColeta itemEventoColeta = itemEventoColetaMapper.toModel(form);

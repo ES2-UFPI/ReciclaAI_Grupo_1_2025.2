@@ -19,6 +19,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
 
+const getStatusColor = (status: 'AGENDADA' | 'CANCELADA' | 'CONCLUIDA') => {
+  switch (status) {
+    case 'AGENDADA':
+      return 'bg-yellow-500/10 text-yellow-500';
+    case 'CANCELADA':
+      return 'bg-destructive/10 text-destructive';
+    case 'CONCLUIDA':
+      return 'bg-green-500/10 text-green-500';
+    default:
+      return 'bg-accent/10 text-accent';
+  }
+};
+
 const ColetasAgendadasColetor = () => {
   const [coletasAgendadas, setColetasAgendadas] = useState<EventoColeta[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +72,6 @@ const ColetasAgendadasColetor = () => {
         description: "A coleta foi confirmada com sucesso.",
       });
 
-      // Update local state to reflect the change
       setColetasAgendadas(prev => 
         prev.map(evento => 
           evento.id === eventoSelecionado 
@@ -67,11 +79,11 @@ const ColetasAgendadasColetor = () => {
             : evento
         )
       );
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Erro ao confirmar coleta",
-        description: "Ocorreu um erro ao confirmar a coleta. Tente novamente.",
+        description: error.message || "Ocorreu um erro ao confirmar a coleta. Tente novamente.",
       });
     } finally {
       setEventoSelecionado(null);
@@ -100,12 +112,6 @@ const ColetasAgendadasColetor = () => {
               className="bg-card hover:shadow-lg transition-shadow duration-200 border-primary/20"
             >
               <CardContent className="p-6 relative">
-                <img 
-                  src="/icone-coleta-1.png" 
-                  alt="Ícone Coleta Agendada" 
-                  className="absolute top-4 right-4 w-8 h-8 object-contain opacity-90"
-                />
-                
                 <div className="flex items-start justify-between mb-4 pb-4 border-b border-border">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10 border-2 border-primary/20">
@@ -119,6 +125,19 @@ const ColetasAgendadasColetor = () => {
                         {evento.produtor.nome}
                       </p>
                     </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge 
+                      variant="secondary"
+                      className={getStatusColor(evento.status)}
+                    >
+                      {evento.status}
+                    </Badge>
+                    <img 
+                      src="/icone-coleta-1.png" 
+                      alt="Ícone Coleta Agendada" 
+                      className="w-8 h-8 object-contain opacity-90"
+                    />
                   </div>
                 </div>
 
@@ -175,6 +194,7 @@ const ColetasAgendadasColetor = () => {
                   <Button
                     onClick={() => handleConfirmarColeta(evento.id)}
                     className="w-full bg-primary hover:bg-primary-dark text-primary-foreground"
+                    disabled={evento.status === 'CONCLUIDA'}
                   >
                     <CheckCircle className="w-4 h-4 mr-2" />
                     Confirmar Coleta

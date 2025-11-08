@@ -1,6 +1,7 @@
 package br.ufpi.recicle_ai.service;
 
 import br.ufpi.recicle_ai.domain.dto.eventoColeta.EventoColetaDTO;
+import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 import br.ufpi.recicle_ai.domain.form.eventoColeta.EventoColetaForm;
 import br.ufpi.recicle_ai.domain.model.coleta.Coleta;
 import br.ufpi.recicle_ai.domain.model.eventoColeta.EventoColeta;
@@ -77,7 +78,7 @@ public class EventoColetaService {
         Long produtorId = eventoColeta.getProdutor().getId();
         for (ItemEventoColeta item : eventoColeta.getItens()) {
             BigDecimal quantidadeARestituir = new BigDecimal(item.getQuantidade());
-            itemInventarioService.creditarNoInventario(produtorId, item.getItem().getId(), quantidadeARestituir);
+            itemInventarioService.creditarNoInventario(produtorId, TipoPessoaEnum.PRODUTOR, item.getItem().getId(), quantidadeARestituir);
         }
 
         eventoColetaRepository.delete(eventoColeta);
@@ -91,8 +92,18 @@ public class EventoColetaService {
             throw new RegraDeNegocioException("Este evento de coleta já está concluído.");
         }
 
+        // Adiciona os itens ao inventário do coletor
+        Long coletorId = eventoColeta.getColeta().getColetor().getId();
+        for (ItemEventoColeta item : eventoColeta.getItens()) {
+            BigDecimal quantidadeACreditar = new BigDecimal(item.getQuantidade());
+            itemInventarioService.creditarNoInventario(coletorId, TipoPessoaEnum.COLETOR, item.getItem().getId(), quantidadeACreditar);
+        }
+
+        // Atualiza o status do evento
         eventoColeta.setStatus(StatusEventoColetaEnum.CONCLUIDA);
         eventoColetaRepository.save(eventoColeta);
         return eventoColetaMapper.toDTO(eventoColeta);
     }
+
+
 }

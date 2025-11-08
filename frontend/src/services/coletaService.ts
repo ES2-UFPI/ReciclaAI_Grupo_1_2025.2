@@ -117,7 +117,13 @@ export async function confirmarEventoColeta(id: number): Promise<void> {
     method: 'PUT',
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
-    throw new Error('Erro ao confirmar coleta');
+    throw {
+      status: response.status,
+      message: data.message,
+      error: data.error
+    };
   }
 }
