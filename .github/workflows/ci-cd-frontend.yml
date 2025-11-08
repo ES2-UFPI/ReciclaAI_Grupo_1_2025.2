@@ -1,0 +1,43 @@
+name: CI/CD Frontend
+
+on:
+  push:
+    branches: [ main, dev]  # inclui branch de deploy
+    paths:
+      - 'frontend/**'                                         # apenas alterações dentro da pasta backend
+      - '.github/workflows/ci-cd-frontend.yml'                # e o próprio workflow
+  pull_request:
+    branches: [ main, dev]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/ci-cd-frontend.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+        
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') && needs.build.result == 'success'
+    
+    steps:
+      - name: Deploy to Render
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_FRONTEND_HOOK }}
