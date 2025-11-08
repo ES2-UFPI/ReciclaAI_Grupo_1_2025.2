@@ -1,7 +1,7 @@
 package br.ufpi.recicle_ai.domain.dto.beneficiamento;
 
 import br.ufpi.recicle_ai.domain.dto.coleta.PontoColetaDTO;
-import br.ufpi.recicle_ai.domain.model.dto.ReceptorDTO;
+import br.ufpi.recicle_ai.domain.dto.ReceptorDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;
