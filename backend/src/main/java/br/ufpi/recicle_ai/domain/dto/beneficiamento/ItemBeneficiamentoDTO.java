@@ -8,4 +8,5 @@ public class ItemBeneficiamentoDTO {
     private Long id;
     private Integer quantidadeMinima;
     private ItemDTO item;
+    // O DTO de Beneficiamento será omitido por enquanto para evitar dependência circular
 }

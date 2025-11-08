@@ -1,6 +1,5 @@
 package br.ufpi.recicle_ai.service;
 
-import br.ufpi.recicle_ai.domain.dto.ColetorDTO;
 import br.ufpi.recicle_ai.domain.dto.coleta.ColetaDTO;
 import br.ufpi.recicle_ai.domain.model.Coletor;
 import br.ufpi.recicle_ai.domain.model.coleta.Coleta;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import br.ufpi.recicle_ai.domain.form.coleta.ColetaForm;
-import br.ufpi.recicle_ai.service.ColetorService;
-import br.ufpi.recicle_ai.service.PontoColetaService;
 
 @Service
 @RequiredArgsConstructor

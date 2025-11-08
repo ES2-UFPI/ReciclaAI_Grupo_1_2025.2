@@ -18,12 +18,12 @@ public class BeneficiamentoService {
 
     @Transactional(readOnly = true)
     public BeneficiamentoDTO findById(Long id) {
-       Beneficiamento beneficiamento = buscarPorId(id);
+       Beneficiamento beneficiamento = findEntityById(id);
        return mapper.toDTO(beneficiamento);
     }
 
     @Transactional(readOnly = true)
-    private Beneficiamento buscarPorId(Long id){
+    public Beneficiamento findEntityById(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Beneficiamento não encontrado!"));
     }
