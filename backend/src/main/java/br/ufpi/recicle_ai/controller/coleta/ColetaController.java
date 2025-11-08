@@ -31,6 +31,11 @@ public class ColetaController {
         return ResponseEntity.ok(coletaService.findByBairro(bairro, pageable));
     }
 
+    @GetMapping("/coletor/{id}")
+    public ResponseEntity<Page<ColetaDTO>> findByColetor(@PathVariable long id, Pageable pageable) {
+        return ResponseEntity.ok(coletaService.findByColetor(id, pageable));
+    }
+  
     @PostMapping
     public ResponseEntity<ColetaDTO> createColetas(@RequestBody @Valid ColetaForm form) {
         ColetaDTO dto = coletaService.createColetas(form);
