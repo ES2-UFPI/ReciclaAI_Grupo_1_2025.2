@@ -42,9 +42,15 @@ public class ColetaService {
                 .map(coletaMapper::toDTO);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ColetaDTO> findByColetor(long id, Pageable pageable) {
+        return coletaRepository.findAllByColetor_id(id, pageable)
+                .map(coletaMapper::toDTO);
+    }
+  
     @Transactional
-    public ColetaDTO createColetas(ColetaForm form){
-         Coletor coletor = coletorService.findEntityById(form.getColetorId());
+    public ColetaDTO createColetas(ColetaForm form) {
+        Coletor coletor = coletorService.findEntityById(form.getColetorId());
         Coleta coleta = coletaMapper.toModel(form);
         coleta.setColetor(coletor);
         PontoColeta pontoColeta = pontoColetaService.create(form.getPontoColeta());

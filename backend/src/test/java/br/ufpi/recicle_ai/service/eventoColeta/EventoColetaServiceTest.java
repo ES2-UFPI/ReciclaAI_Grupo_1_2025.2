@@ -1,4 +1,4 @@
-package br.ufpi.recicle_ai.service;
+package br.ufpi.recicle_ai.service.eventoColeta;
 
 import br.ufpi.recicle_ai.domain.dto.eventoColeta.EventoColetaDTO;
 import br.ufpi.recicle_ai.domain.enuns.StatusEventoColetaEnum;
@@ -8,6 +8,10 @@ import br.ufpi.recicle_ai.domain.model.coleta.Coleta;
 import br.ufpi.recicle_ai.domain.model.eventoColeta.EventoColeta;
 import br.ufpi.recicle_ai.mapper.EventoColetaMapper;
 import br.ufpi.recicle_ai.repository.EventoColetaRepository;
+import br.ufpi.recicle_ai.service.ColetaService;
+import br.ufpi.recicle_ai.service.EventoColetaService;
+import br.ufpi.recicle_ai.service.ItemInventarioService;
+import br.ufpi.recicle_ai.service.ProdutorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
