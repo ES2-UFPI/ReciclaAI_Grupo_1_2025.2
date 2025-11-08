@@ -2,12 +2,12 @@ name: CI/CD Frontend
 
 on:
   push:
-    branches: [ main, dev]  # inclui branch de deploy
+    branches: [ main, dev ]
     paths:
-      - 'frontend/**'                                         # apenas alterações dentro da pasta backend
-      - '.github/workflows/ci-cd-frontend.yml'                # e o próprio workflow
+      - 'frontend/**'
+      - '.github/workflows/ci-cd-frontend.yml'
   pull_request:
-    branches: [ main, dev]
+    branches: [ main, dev ]
     paths:
       - 'frontend/**'
       - '.github/workflows/ci-cd-frontend.yml'
@@ -26,11 +26,14 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json   # adiciona cache certo
 
       - name: Install dependencies
-        run: npm install
+        working-directory: frontend
+        run: npm ci   # usa o lockfile existente, mais confiável
 
       - name: Build
+        working-directory: frontend
         run: npm run build
         
   deploy:
