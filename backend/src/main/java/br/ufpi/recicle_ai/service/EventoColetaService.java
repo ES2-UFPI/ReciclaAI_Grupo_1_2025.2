@@ -59,6 +59,13 @@ public class EventoColetaService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<EventoColetaDTO> findAllByColetorId(Long coletorId) {
+        return eventoColetaRepository.findAllByColetaColetorId(coletorId).stream()
+                .map(eventoColetaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void delete(Long id) {
         EventoColeta eventoColeta = findEntityById(id);

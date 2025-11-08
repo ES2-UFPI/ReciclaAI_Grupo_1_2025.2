@@ -32,6 +32,11 @@ public class EventoColetaController {
         return ResponseEntity.ok(eventoColetaService.findAllByProdutorId(id));
     }
 
+    @GetMapping("/coletor/{id}")
+    public ResponseEntity<List<EventoColetaDTO>> findAllByColetorId(@PathVariable Long id) {
+        return ResponseEntity.ok(eventoColetaService.findAllByColetorId(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         eventoColetaService.delete(id);
