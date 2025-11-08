@@ -2,12 +2,12 @@ name: CI - Backend Build, Tests & Deploy (Render)
 
 on:
   push:
-    branches: [ main, dev, deploy-render ]  # inclui branch de deploy
+    branches: [ main, dev]  # inclui branch de deploy
     paths:
       - 'backend/**'                                         # apenas alterações dentro da pasta backend
       - '.github/workflows/ci-cd-backend.yml'                # e o próprio workflow
   pull_request:
-    branches: [ main, dev, deploy-render ]
+    branches: [ main, dev]
     paths:
       - 'backend/**'
       - '.github/workflows/ci-cd-backend.yml'
@@ -60,7 +60,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/deploy-render' && needs.build.result == 'success'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev') && needs.build.result == 'success'
 
     steps:
       - name: Trigger Render Docker deploy

@@ -55,9 +55,9 @@ public class ItemInventarioService {
     }
 
     @Transactional
-    public void debitarDoInventario(Long produtorId, Long itemId, BigDecimal quantidadeADebitar) {
-        ItemInventario itemInventario = itemInventarioRepository.findByPessoaIdAndTipoPessoaAndItemId(produtorId, TipoPessoaEnum.PRODUTOR, itemId)
-                .orElseThrow(() -> new RegraDeNegocioException("Produtor não possui o item especificado no inventário."));
+    public void debitarDoInventario(Long pessoaId, TipoPessoaEnum tipoPessoa, Long itemId, BigDecimal quantidadeADebitar) {
+        ItemInventario itemInventario = itemInventarioRepository.findByPessoaIdAndTipoPessoaAndItemId(pessoaId, tipoPessoa, itemId)
+                .orElseThrow(() -> new RegraDeNegocioException(tipoPessoa.name() + " não possui o item especificado no inventário."));
 
         BigDecimal estoqueAtual = itemInventario.getQuantidade();
 
@@ -71,8 +71,8 @@ public class ItemInventarioService {
     }
 
     @Transactional
-    public void creditarNoInventario(Long produtorId, Long itemId, BigDecimal quantidadeACreditar) {
-        Optional<ItemInventario> optionalItemInventario = itemInventarioRepository.findByPessoaIdAndTipoPessoaAndItemId(produtorId, TipoPessoaEnum.PRODUTOR, itemId);
+    public void creditarNoInventario(Long pessoaId, TipoPessoaEnum tipoPessoa, Long itemId, BigDecimal quantidadeACreditar) {
+        Optional<ItemInventario> optionalItemInventario = itemInventarioRepository.findByPessoaIdAndTipoPessoaAndItemId(pessoaId, tipoPessoa, itemId);
 
         if (optionalItemInventario.isPresent()) {
             ItemInventario itemInventario = optionalItemInventario.get();
@@ -81,8 +81,8 @@ public class ItemInventarioService {
         } else {
             Item item = itemService.buscarPorId(itemId);
             ItemInventario novoItem = new ItemInventario();
-            novoItem.setPessoaId(produtorId);
-            novoItem.setTipoPessoa(TipoPessoaEnum.PRODUTOR);
+            novoItem.setPessoaId(pessoaId);
+            novoItem.setTipoPessoa(tipoPessoa);
             novoItem.setItem(item);
             novoItem.setQuantidade(quantidadeACreditar);
             itemInventarioRepository.save(novoItem);

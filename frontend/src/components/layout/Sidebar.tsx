@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 const menuItems = [
   { icon: Calendar, label: "Agendar Coleta", path: "/agendar-coleta" },
   { icon: Package, label: "Inventário", path: "/inventario" },
+  { icon: Calendar, label: "Coletas Agendadas", path: "/coletas-agendadas" },
   { icon: Clock, label: "Histórico", path: "/historico" },
   { icon: BarChart3, label: "Relatórios", path: "/relatorios" },
   { icon: Coins, label: "Moedas Verdes", path: "/moedas" },

@@ -6,6 +6,8 @@ import br.ufpi.recicle_ai.domain.model.Coletor;
 import br.ufpi.recicle_ai.domain.model.Produtor;
 import br.ufpi.recicle_ai.domain.model.coleta.Coleta;
 import br.ufpi.recicle_ai.domain.model.eventoColeta.EventoColeta;
+import br.ufpi.recicle_ai.domain.model.eventoColeta.ItemEventoColeta;
+import br.ufpi.recicle_ai.domain.model.item.Item;
 import br.ufpi.recicle_ai.exception.RegraDeNegocioException;
 import br.ufpi.recicle_ai.mapper.EventoColetaMapper;
 import br.ufpi.recicle_ai.repository.EventoColetaRepository;
@@ -21,10 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,6 +60,8 @@ class EventoColetaServiceTest {
     private EventoColeta eventoColeta2;
     private EventoColetaDTO eventoColetaDTO1;
     private EventoColetaDTO eventoColetaDTO2;
+    private ItemEventoColeta itemEventoColeta;
+    private Item item;
 
     @BeforeEach
     void setUp() {
@@ -77,11 +78,25 @@ class EventoColetaServiceTest {
         coleta.setId(1L);
         coleta.setColetor(coletor);
 
+        item = new Item();
+        item.setId(1L);
+        item.setNome("Garrafa PET");
+        item.setUnidade("unidade");
+
+        itemEventoColeta = new ItemEventoColeta();
+        itemEventoColeta.setItem(item);
+        itemEventoColeta.setQuantidade(1);
+        itemEventoColeta.setEventoColeta(eventoColeta1);
+        itemEventoColeta.setId(1L);
+
         eventoColeta1 = new EventoColeta();
         eventoColeta1.setId(1L);
         eventoColeta1.setColeta(coleta);
         eventoColeta1.setProdutor(produtor);
         eventoColeta1.setStatus(StatusEventoColetaEnum.AGENDADA);
+        List<ItemEventoColeta> itens = new ArrayList<>();
+        itens.add(itemEventoColeta);
+        eventoColeta1.setItens(itens);
 
         eventoColeta2 = new EventoColeta();
         eventoColeta2.setId(2L);

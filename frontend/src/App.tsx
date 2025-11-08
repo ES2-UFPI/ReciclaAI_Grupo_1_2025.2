@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import InventoryList from "./pages/InventoryList";
 import AddInventoryItem from "./pages/AddInventoryItem";
 import { InventoryProvider } from "@/contexts/InventoryContext";
+import ColetasAgendadasColetor from "./pages/ColetasAgendadasColetor";
 
 const queryClient = new QueryClient();
 
@@ -21,8 +22,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster position="top-left" />
-        <Sonner />
+        <Toaster />
+        <Sonner position="top-left" />
         <BrowserRouter>
           <InventoryProvider>
             <Routes>
@@ -33,6 +34,7 @@ function App() {
                   path="/declaracao-materiais"
                   element={<DeclaracaoMateriais />}
                 />
+                <Route path="/coletas-agendadas" element={<ColetasAgendadasColetor />} />
                 <Route path="/inventario" element={<InventoryList />} />
                 <Route path="/inventory" element={<InventoryList />} />
                 <Route path="/inventory/add" element={<AddInventoryItem />} />
