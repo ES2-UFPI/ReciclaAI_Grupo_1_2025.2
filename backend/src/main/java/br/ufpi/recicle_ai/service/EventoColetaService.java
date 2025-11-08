@@ -82,4 +82,17 @@ public class EventoColetaService {
 
         eventoColetaRepository.delete(eventoColeta);
     }
+
+    @Transactional
+    public EventoColetaDTO confirmarEvento(Long id) {
+        EventoColeta eventoColeta = findEntityById(id);
+
+        if (eventoColeta.getStatus() == StatusEventoColetaEnum.CONCLUIDA) {
+            throw new RegraDeNegocioException("Este evento de coleta já está concluído.");
+        }
+
+        eventoColeta.setStatus(StatusEventoColetaEnum.CONCLUIDA);
+        eventoColetaRepository.save(eventoColeta);
+        return eventoColetaMapper.toDTO(eventoColeta);
+    }
 }
