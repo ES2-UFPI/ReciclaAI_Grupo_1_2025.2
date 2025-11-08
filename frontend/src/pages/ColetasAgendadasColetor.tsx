@@ -1,15 +1,30 @@
 import { useEffect, useState } from "react";
 import { EventoColeta } from "@/types/api";
-import { listarColetasAgendadasColetor } from "@/services/coletaService";
+import { listarColetasAgendadasColetor, confirmarEventoColeta } from "@/services/coletaService";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 const ColetasAgendadasColetor = () => {
   const [coletasAgendadas, setColetasAgendadas] = useState<EventoColeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [eventoSelecionado, setEventoSelecionado] = useState<number | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchColetas = async () => {
@@ -28,6 +43,40 @@ const ColetasAgendadasColetor = () => {
 
     fetchColetas();
   }, []);
+
+  const handleConfirmarColeta = async (eventoId: number) => {
+    setEventoSelecionado(eventoId);
+  };
+
+  const handleConfirmacao = async () => {
+    if (!eventoSelecionado) return;
+
+    try {
+      await confirmarEventoColeta(eventoSelecionado);
+      
+      toast({
+        title: "Coleta confirmada",
+        description: "A coleta foi confirmada com sucesso.",
+      });
+
+      // Update local state to reflect the change
+      setColetasAgendadas(prev => 
+        prev.map(evento => 
+          evento.id === eventoSelecionado 
+            ? { ...evento, status: 'CONCLUIDA' } 
+            : evento
+        )
+      );
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao confirmar coleta",
+        description: "Ocorreu um erro ao confirmar a coleta. Tente novamente.",
+      });
+    } finally {
+      setEventoSelecionado(null);
+    }
+  };
 
   if (loading) return <div>Carregando coletas...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -109,7 +158,7 @@ const ColetasAgendadasColetor = () => {
 
                 <div className="pt-3 border-t border-border">
                   <p className="text-xs text-muted-foreground mb-2">Materiais informados:</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 mb-4">
                     {evento.itens.map((item) => (
                       <Badge 
                         key={item.id} 
@@ -122,12 +171,37 @@ const ColetasAgendadasColetor = () => {
                       </Badge>
                     ))}
                   </div>
+
+                  <Button
+                    onClick={() => handleConfirmarColeta(evento.id)}
+                    className="w-full bg-primary hover:bg-primary-dark text-primary-foreground"
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Confirmar Coleta
+                  </Button>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
+
+      <AlertDialog open={eventoSelecionado !== null} onOpenChange={() => setEventoSelecionado(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Coleta</AlertDialogTitle>
+            <AlertDialogDescription>
+              Você quer mesmo confirmar essa Coleta?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Não</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmacao}>
+              Sim
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

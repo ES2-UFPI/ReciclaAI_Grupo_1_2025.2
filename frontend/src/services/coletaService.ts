@@ -111,3 +111,13 @@ export async function listarColetasAgendadasColetor(coletorId: number): Promise<
   
   return response.json();
 }
+
+export async function confirmarEventoColeta(id: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/eventos-coleta/${id}/confirmar`, {
+    method: 'PUT',
+  });
+
+  if (!response.ok) {
+    throw new Error('Erro ao confirmar coleta');
+  }
+}
