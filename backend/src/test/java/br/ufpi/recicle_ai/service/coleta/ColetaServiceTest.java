@@ -1,9 +1,10 @@
-package br.ufpi.recicle_ai.service;
+package br.ufpi.recicle_ai.service.coleta;
 
 import br.ufpi.recicle_ai.domain.dto.coleta.ColetaDTO;
 import br.ufpi.recicle_ai.domain.model.coleta.Coleta;
 import br.ufpi.recicle_ai.mapper.ColetaMapper;
 import br.ufpi.recicle_ai.repository.ColetaRepository;
+import br.ufpi.recicle_ai.service.ColetaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

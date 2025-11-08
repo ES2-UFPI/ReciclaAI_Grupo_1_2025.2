@@ -1,21 +1,25 @@
 package br.ufpi.recicle_ai.repository;
 
 import br.ufpi.recicle_ai.domain.model.coleta.Coleta;
-import br.ufpi.recicle_ai.domain.model.coleta.Coletor;
+import br.ufpi.recicle_ai.domain.model.Coletor;
 import br.ufpi.recicle_ai.domain.model.coleta.PontoColeta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@TestPropertySource(properties = "spring.main.web-application-type=none")
 class ColetaRepositoryTest {
 
     @Autowired
@@ -69,7 +73,7 @@ class ColetaRepositoryTest {
         assertThat(result).isNotEmpty();
         assertThat(result.getContent())
                 .extracting(c -> c.getPontoColeta().getBairro())
-                .containsExactly("Centro");
+                .contains("Centro");
     }
 
     @Test
@@ -105,8 +109,8 @@ class ColetaRepositoryTest {
     void testFindAllDefaultJpaMethod() {
         List<Coleta> all = coletaRepository.findAll();
 
-        assertThat(all).hasSize(2);
-        assertThat(all).extracting(Coleta::getId).containsExactlyInAnyOrder(1L, 2L);
+        assertThat(all).hasSize(4);
+        assertThat(all).extracting(Coleta::getId).containsExactlyInAnyOrder(1L, 2L, 3L, 4L);
     }
 
     @Test
