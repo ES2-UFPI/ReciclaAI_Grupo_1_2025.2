@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { TipoPessoa } from '@/types/api';
+import { API_BASE_URL } from '@/config/api';
 
 interface AuthResponse {
   pessoaId: number;
@@ -30,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, senha: string) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/auth/login`, {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
