@@ -1,7 +1,5 @@
 import { API_BASE_URL } from '@/config/api';
-import { InventoryItem } from '@/types/api';
-
-type TipoPessoa = 'PRODUTOR' | 'COLETOR';
+import { InventoryItem, TipoPessoa } from '@/types/api';
 
 export async function listarInventario(pessoaId: number, tipoPessoa: TipoPessoa): Promise<InventoryItem[]> {
   const response = await fetch(`${API_BASE_URL}/inventario/pessoa/${pessoaId}?tipoPessoa=${tipoPessoa}`);

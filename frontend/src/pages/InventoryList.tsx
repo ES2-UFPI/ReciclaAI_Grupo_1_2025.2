@@ -4,20 +4,25 @@ import { InventoryCard } from '@/components/inventory/InventoryCard';
 import { Search } from 'lucide-react';
 import { listarInventario } from '@/services/inventoryService';
 import { InventoryItem } from '@/types/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 const InventoryList = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchInventory = async () => {
+      if (!user) {
+        setError('Usuário não autenticado');
+        setLoading(false);
+        return;
+      }
+
       try {
-        const mockPessoaId = 1;
-        const mockTipoPessoa = 'PRODUTOR' as const;
-        
-        const data = await listarInventario(mockPessoaId, mockTipoPessoa);
+        const data = await listarInventario(user.pessoaId, user.tipoPessoa);
         setItems(data);
       } catch (err) {
         setError('Erro ao carregar inventário');
@@ -28,7 +33,7 @@ const InventoryList = () => {
     };
 
     fetchInventory();
-  }, []);
+  }, [user]);
 
   if (loading) return <div>Carregando inventário...</div>;
   if (error) return <div className="text-red-500">{error}</div>;

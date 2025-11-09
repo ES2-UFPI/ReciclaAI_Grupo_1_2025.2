@@ -76,7 +76,7 @@ export interface EventoColeta {
   itens: ItemEvento[];
 }
 
-export type TipoPessoa = 'PRODUTOR' | 'COLETOR';
+export type TipoPessoa = 'PRODUTOR' | 'COLETOR' | 'RECEPTOR';
 
 export interface InventoryItem {
   id: number;

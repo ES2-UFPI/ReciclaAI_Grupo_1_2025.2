@@ -6,8 +6,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  // Get initials from user name
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center justify-between px-6">
@@ -36,15 +56,22 @@ const Header = () => {
           <DropdownMenuTrigger className="flex items-center gap-3 focus:outline-none">
             <Avatar className="h-9 w-9 border-2 border-primary/20">
               <AvatarFallback className="bg-primary text-primary-foreground font-medium">
-                MS
+                {user?.nome ? getInitials(user.nome) : "U"}
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm font-medium hidden md:block">Maria Souza</span>
+            <span className="text-sm font-medium hidden md:block">
+              {user?.nome || "Usuário"}
+            </span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 bg-popover">
             <DropdownMenuItem>Perfil</DropdownMenuItem>
             <DropdownMenuItem>Configurações</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">Sair</DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={handleLogout}
+            >
+              Sair
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
