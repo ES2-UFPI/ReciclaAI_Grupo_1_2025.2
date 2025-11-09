@@ -14,9 +14,11 @@ import br.ufpi.recicle_ai.mapper.ItemInventarioMapper;
 import br.ufpi.recicle_ai.domain.model.item.ItemInventario;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 
 @Service
@@ -36,12 +38,33 @@ public class ItemInventarioService {
         return itemInventarioMapper.toDTO(itemSalvo);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ItemInventarioDTO> listarItensPorPessoa(Long pessoaId, TipoPessoaEnum tipoPessoa) {
         List<ItemInventario> itens = itemInventarioRepository.findByPessoaIdAndTipoPessoa(pessoaId, tipoPessoa);
+
+        if (itens.isEmpty()) {
+            itens = criarInventarioInicial(pessoaId, tipoPessoa);
+        }
+
         return itens.stream()
                 .map(itemInventarioMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    private List<ItemInventario> criarInventarioInicial(Long pessoaId, TipoPessoaEnum tipoPessoa) {
+        List<ItemInventario> inventarioInicial = new ArrayList<>();
+        LongStream.rangeClosed(1, 4).forEach(itemId -> {
+            Item item = itemService.buscarPorId(itemId);
+            if (item != null) {
+                ItemInventario novoItem = new ItemInventario();
+                novoItem.setPessoaId(pessoaId);
+                novoItem.setTipoPessoa(tipoPessoa);
+                novoItem.setItem(item);
+                novoItem.setQuantidade(BigDecimal.ZERO);
+                inventarioInicial.add(novoItem);
+            }
+        });
+        return itemInventarioRepository.saveAll(inventarioInicial);
     }
 
     @Transactional

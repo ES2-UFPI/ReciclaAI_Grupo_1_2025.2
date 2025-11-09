@@ -18,6 +18,10 @@ import ColetasAgendadasColetor from "./pages/ColetasAgendadasColetor";
 import CriarColeta from "./pages/CriarColeta";
 import InformarMateriaisColeta from "./pages/InformarMateriaisColeta";
 import FormularioColeta from "./pages/FormularioColeta";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Login from "./pages/Login";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -25,37 +29,46 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner position="top-left" />
-        <BrowserRouter>
-          <InventoryProvider>
+        <AuthProvider>
+          <Toaster />
+          <Sonner position="top-left" />
+          <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Navigate to="/agendar-coleta" replace />} />
-              <Route element={<DashboardLayout />}>
-                <Route path="/agendar-coleta" element={<AgendarColeta />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Index />} />
+                <Route path="agendar-coleta" element={<AgendarColeta />} />
+                <Route path="inventario" element={<InventoryList />} />
+                <Route path="coletas-agendadas" element={<ColetasAgendadasColetor />} />
+                <Route path="historico" element={<Historico />} />
+                <Route path="relatorios" element={<Relatorios />} />
+                <Route path="moedas" element={<Moedas />} />
                 <Route
-                  path="/declaracao-materiais"
+                  path="declaracao-materiais"
                   element={<DeclaracaoMateriais />}
                 />
-                <Route path="/coletas-agendadas" element={<ColetasAgendadasColetor />} />
-                <Route path="/inventario" element={<InventoryList />} />
-                <Route path="/inventory" element={<InventoryList />} />
-                <Route path="/inventory/add" element={<AddInventoryItem />} />
-                <Route path="/criar-coleta" element={<CriarColeta />} />
+                <Route
+                  path="coletas-agendadas-coletor"
+                  element={<ColetasAgendadasColetor />}
+                />
+                <Route path="criar-coleta" element={<CriarColeta />} />
                 <Route path="formulario-coleta" element={<FormularioColeta />} />
                 <Route
                   path="informar-materiais-coleta"
                   element={<InformarMateriaisColeta />}
                 />
-                <Route path="/historico" element={<Historico />} />
-                <Route path="/relatorios" element={<Relatorios />} />
-                <Route path="/moedas" element={<Moedas />} />
+                <Route path="*" element={<NotFound />} />
               </Route>
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
             </Routes>
-          </InventoryProvider>
-        </BrowserRouter>
+          </BrowserRouter>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
