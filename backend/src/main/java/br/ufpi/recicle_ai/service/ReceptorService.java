@@ -57,4 +57,10 @@ public class ReceptorService {
     public void delete(Long id) {
         receptorRepository.deleteById(id);
     }
+
+    @Transactional
+    public Receptor findEntityById(Long id){
+        return receptorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Receptor não encontrado!"));
+    }
 }
