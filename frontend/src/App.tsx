@@ -16,8 +16,11 @@ import AddInventoryItem from "./pages/AddInventoryItem";
 import { InventoryProvider } from "@/contexts/InventoryContext";
 import ColetasAgendadasColetor from "./pages/ColetasAgendadasColetor";
 import CriarColeta from "./pages/CriarColeta";
+import CriarBeneficiamento from "./pages/CriarBeneficiamento";
 import InformarMateriaisColeta from "./pages/InformarMateriaisColeta";
+import InformarMateriaisBeneficiamento from "./pages/InformarMateriaisBeneficiamento";
 import FormularioColeta from "./pages/FormularioColeta";
+import FormularioBeneficiamento from "./pages/FormularioBeneficiamento";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Login from "./pages/Login";
@@ -59,10 +62,16 @@ function App() {
                   element={<ColetasAgendadasColetor />}
                 />
                 <Route path="criar-coleta" element={<CriarColeta />} />
+                <Route path="criar-beneficiamento" element={<CriarBeneficiamento />} />
                 <Route path="formulario-coleta" element={<FormularioColeta />} />
+                <Route path="formulario-beneficiamento" element={<FormularioBeneficiamento />} />
                 <Route
                   path="informar-materiais-coleta"
                   element={<InformarMateriaisColeta />}
+                />
+                <Route
+                  path="informar-materiais-beneficiamento"
+                  element={<InformarMateriaisBeneficiamento />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Route>
