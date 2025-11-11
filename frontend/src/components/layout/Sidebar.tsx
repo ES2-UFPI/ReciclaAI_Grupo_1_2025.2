@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Calendar, Package, Clock, BarChart3, Coins, PlusCircle } from "lucide-react";
+import { Calendar, Package, Clock, BarChart3, Coins, PlusCircle, Factory } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface MenuItem {
@@ -27,6 +27,12 @@ const allMenuItems: MenuItem[] = [
     label: "Coletas Agendadas",
     path: "/coletas-agendadas-coletor",
     allowedTypes: ["COLETOR"],
+  },
+  {
+    icon: Factory,
+    label: "Criar Beneficiamento",
+    path: "/criar-beneficiamento",
+    allowedTypes: ["RECEPTOR"],
   },
   {
     icon: Package,
