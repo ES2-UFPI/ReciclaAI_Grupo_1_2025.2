@@ -1,10 +1,13 @@
 package br.ufpi.recicle_ai.controller.beneficiamento;
 
+import br.ufpi.recicle_ai.domain.dto.MensagemDTO;
 import br.ufpi.recicle_ai.domain.dto.beneficiamento.EventoBeneficiamentoDTO;
 import br.ufpi.recicle_ai.domain.form.beneficiamento.EventoBeneficiamentoForm;
 import br.ufpi.recicle_ai.service.EventoBeneficiamentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,16 +42,19 @@ public class EventoBeneficiamentoController {
     @GetMapping("/bairro/{bairro}")
     @Operation(summary = "Listar eventos por bairro", description = "Retorna todos os eventos de beneficiamento de um bairro específico")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de eventos retornada com sucesso"),
-        @ApiResponse(responseCode = "204", description = "Nenhum evento encontrado para o bairro informado")
+        @ApiResponse(responseCode = "200", description = "Lista de eventos retornada com sucesso",
+                content = @Content(schema = @Schema(implementation = EventoBeneficiamentoDTO.class))),
+        @ApiResponse(responseCode = "200", description = "Nenhum evento encontrado para o bairro informado",
+                content = @Content(schema = @Schema(implementation = MensagemDTO.class)))
     })
-    public ResponseEntity<List<EventoBeneficiamentoDTO>> listarEventosPorBairro(
+    public ResponseEntity<?> listarEventosPorBairro(
             @Parameter(description = "Nome do bairro", example = "Centro")
             @PathVariable String bairro) {
         List<EventoBeneficiamentoDTO> eventos = eventoBeneficiamentoService.findByBairro(bairro);
         
         if (eventos.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            MensagemDTO mensagem = new MensagemDTO("Não existem eventos de beneficiamento no bairro: " + bairro);
+            return ResponseEntity.ok(mensagem);
         }
         
         return ResponseEntity.ok(eventos);
