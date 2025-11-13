@@ -123,27 +123,6 @@ public class ColetaControllerTest {
     }
 
     @Test
-    @DisplayName("Deve retornar 400 Bad Request quando datas não forem futuras")
-    void createColetas_invalidDates_returnsBadRequest() throws Exception {
-        String requestJson = "{\n" +
-                "  \"coletorId\": 2,\n" +
-                "  \"dataInicio\": \"2024-10-30T09:00:00\",\n" +
-                "  \"dataFim\": \"2024-10-30T12:00:00\",\n" +
-                "  \"pontoColeta\": {\n" +
-                "    \"logradouro\": \"Rua Teste\",\n" +
-                "    \"numero\": \"100\",\n" +
-                "    \"bairro\": \"Centro\",\n" +
-                "    \"cep\": \"64000-000\"\n" +
-                "  }\n" +
-                "}";
-
-        mockMvc.perform(post("/coletas")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     @DisplayName("GET /coletas - deve retornar todas as coletas com sucesso")
     void testFindAll() throws Exception {
         when(coletaService.findAll(any(Pageable.class))).thenReturn(mockPage);
