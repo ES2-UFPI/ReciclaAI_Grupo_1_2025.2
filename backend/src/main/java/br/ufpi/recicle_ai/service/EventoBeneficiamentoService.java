@@ -27,7 +27,7 @@ public class EventoBeneficiamentoService {
     private final EventoBeneficiamentoMapper eventoBeneficiamentoMapper;
     private final BeneficiamentoService beneficiamentoService;
     private final ColetorService coletorService;
-    private final ItemInventarioService itemInventarioService; // Dependência adicionada
+    private final ItemInventarioService itemInventarioService;
 
     @Transactional(readOnly = true)
     public EventoBeneficiamentoDTO findById(Long id){
@@ -65,7 +65,6 @@ public class EventoBeneficiamentoService {
             throw new RegraDeNegocioException("Não é possível cancelar um evento de beneficiamento que já foi concluído.");
         }
 
-        // Restitui os itens ao inventário do Coletor
         Long coletorId = evento.getColetor().getId();
         for (ItemEventoBeneficiamento item : evento.getItens()) {
             BigDecimal quantidadeARestituir = new BigDecimal(item.getQuantidade());
@@ -73,6 +72,25 @@ public class EventoBeneficiamentoService {
         }
 
         eventoBeneficiamentoRepository.delete(evento);
+    }
+
+    @Transactional
+    public EventoBeneficiamentoDTO confirmarEvento(Long id) {
+        EventoBeneficiamento evento = findEntityById(id);
+
+        if (evento.getStatus() == StatusBeneficiamentoEnum.CONCLUIDA) {
+            throw new RegraDeNegocioException("Este evento de beneficiamento já está concluído.");
+        }
+
+        Long receptorId = evento.getBeneficiamento().getReceptor().getId();
+        for (ItemEventoBeneficiamento item : evento.getItens()) {
+            BigDecimal quantidadeACreditar = new BigDecimal(item.getQuantidade());
+            itemInventarioService.creditarNoInventario(receptorId, TipoPessoaEnum.RECEPTOR, item.getItem().getId(), quantidadeACreditar);
+        }
+
+        evento.setStatus(StatusBeneficiamentoEnum.CONCLUIDA);
+        EventoBeneficiamento eventoSalvo = eventoBeneficiamentoRepository.save(evento);
+        return eventoBeneficiamentoMapper.toDTO(eventoSalvo);
     }
 
     @Transactional(readOnly = true)

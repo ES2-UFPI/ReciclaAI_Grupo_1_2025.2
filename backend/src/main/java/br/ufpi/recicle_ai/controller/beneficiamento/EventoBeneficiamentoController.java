@@ -68,4 +68,16 @@ public class EventoBeneficiamentoController {
         eventoBeneficiamentoService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/confirmar")
+    @Operation(summary = "Confirmar evento de beneficiamento", description = "Confirma um evento de beneficiamento, alterando seu status para CONCLUIDO e transferindo itens para o Receptor.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Evento confirmado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Não é possível confirmar evento já concluído ou cancelado", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Evento não encontrado")
+    })
+    public ResponseEntity<EventoBeneficiamentoDTO> confirmarEvento(@PathVariable Long id) {
+        EventoBeneficiamentoDTO dto = eventoBeneficiamentoService.confirmarEvento(id);
+        return ResponseEntity.ok(dto);
+    }
 }

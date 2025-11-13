@@ -170,3 +170,29 @@ export async function adicionarItemEventoBeneficiamento(
 
   return data;
 }
+
+export async function listarBeneficiamentosAgendadosReceptor(receptorId: number): Promise<EventoBeneficiamento[]> {
+  const response = await fetch(`${API_BASE_URL}/eventos-beneficiamento/receptor/${receptorId}`);
+  
+  if (!response.ok) {
+    throw new Error('Erro ao carregar beneficiamentos agendados');
+  }
+  
+  return response.json();
+}
+
+export async function confirmarEventoBeneficiamento(id: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/eventos-beneficiamento/${id}/confirmar`, {
+    method: 'PUT',
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw {
+      status: response.status,
+      message: data.message,
+      error: data.error
+    };
+  }
+}
