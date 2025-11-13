@@ -1,13 +1,15 @@
 package br.ufpi.recicle_ai.repository;
 
-import br.ufpi.recicle_ai.domain.model.beneficiamento.Beneficiamento;
 import br.ufpi.recicle_ai.domain.model.Receptor;
+import br.ufpi.recicle_ai.domain.model.coleta.PontoColeta;
+import br.ufpi.recicle_ai.domain.model.beneficiamento.Beneficiamento;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,10 +23,21 @@ public class BeneficiamentoRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
+    private PontoColeta criarPontoColeta() {
+        PontoColeta ponto = new PontoColeta();
+        ponto.setBairro("Centro");
+        ponto.setCep("64000-000");
+        ponto.setLogradouro("Rua das Árvores");
+        ponto.setNumero("123");
+        return entityManager.persist(ponto);
+    }
+
     @Test
     @DisplayName("Deve salvar e buscar Beneficiamento por ID do receptor")
     void deveBuscarBeneficiamentosPorReceptorId() {
         // Arrange
+        PontoColeta ponto = criarPontoColeta();
+
         Receptor receptor1 = new Receptor();
         receptor1.setNome("Centro de Reciclagem XYZ");
         entityManager.persist(receptor1);
@@ -35,14 +48,20 @@ public class BeneficiamentoRepositoryTest {
 
         Beneficiamento b1 = new Beneficiamento();
         b1.setReceptor(receptor1);
+        b1.setPontoColeta(ponto);
+        b1.setDataInicio(LocalDateTime.now());
         entityManager.persist(b1);
 
         Beneficiamento b2 = new Beneficiamento();
         b2.setReceptor(receptor1);
+        b2.setPontoColeta(ponto);
+        b2.setDataInicio(LocalDateTime.now());
         entityManager.persist(b2);
 
         Beneficiamento b3 = new Beneficiamento();
         b3.setReceptor(receptor2);
+        b3.setPontoColeta(ponto);
+        b3.setDataInicio(LocalDateTime.now());
         entityManager.persist(b3);
 
         entityManager.flush();
@@ -79,12 +98,16 @@ public class BeneficiamentoRepositoryTest {
     @DisplayName("Deve salvar e recuperar Beneficiamento pelo método padrão do JPA")
     void deveSalvarEBuscarBeneficiamentoPorId() {
         // Arrange
+        PontoColeta ponto = criarPontoColeta();
+
         Receptor receptor = new Receptor();
         receptor.setNome("Centro Ambiental");
         entityManager.persist(receptor);
 
         Beneficiamento beneficiamento = new Beneficiamento();
         beneficiamento.setReceptor(receptor);
+        beneficiamento.setPontoColeta(ponto);
+        beneficiamento.setDataInicio(LocalDateTime.now());
         Beneficiamento salvo = repository.save(beneficiamento);
 
         // Act
@@ -93,6 +116,6 @@ public class BeneficiamentoRepositoryTest {
         // Assert
         assertTrue(encontrado.isPresent());
         assertEquals(receptor.getId(), encontrado.get().getReceptor().getId());
+        assertEquals(ponto.getId(), encontrado.get().getPontoColeta().getId());
     }
 }
-
