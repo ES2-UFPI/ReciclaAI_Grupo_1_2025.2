@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ColetaController.class)
+@WebMvcTest(br.ufpi.recicle_ai.controller.coleta.ColetaController.class)
 public class ColetaControllerTest {
 
     @Autowired
