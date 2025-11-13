@@ -17,6 +17,7 @@ import InventoryList from "./pages/InventoryList";
 import AddInventoryItem from "./pages/AddInventoryItem";
 import { InventoryProvider } from "@/contexts/InventoryContext";
 import ColetasAgendadasColetor from "./pages/ColetasAgendadasColetor";
+import BeneficiamentosAgendadosReceptor from "./pages/BeneficiamentosAgendadosReceptor";
 import CriarColeta from "./pages/CriarColeta";
 import CriarBeneficiamento from "./pages/CriarBeneficiamento";
 import InformarMateriaisColeta from "./pages/InformarMateriaisColeta";
@@ -67,6 +68,10 @@ function App() {
                 <Route
                   path="coletas-agendadas-coletor"
                   element={<ColetasAgendadasColetor />}
+                />
+                <Route
+                  path="beneficiamentos-agendados-receptor"
+                  element={<BeneficiamentosAgendadosReceptor />}
                 />
                 <Route path="criar-coleta" element={<CriarColeta />} />
                 <Route path="criar-beneficiamento" element={<CriarBeneficiamento />} />

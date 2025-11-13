@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Calendar, Package, Clock, BarChart3, Coins, PlusCircle, Factory, Truck } from "lucide-react";
+import { Calendar, Package, Clock, Coins, PlusCircle, Factory, Truck, CheckCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface MenuItem {
@@ -41,6 +41,12 @@ const allMenuItems: MenuItem[] = [
     allowedTypes: ["RECEPTOR"],
   },
   {
+    icon: CheckCircle,
+    label: "Beneficiamentos Agendados",
+    path: "/beneficiamentos-agendados-receptor",
+    allowedTypes: ["RECEPTOR"],
+  },
+  {
     icon: Package,
     label: "Inventário",
     path: "/inventario",
@@ -50,12 +56,6 @@ const allMenuItems: MenuItem[] = [
     icon: Clock,
     label: "Histórico",
     path: "/historico",
-    allowedTypes: ["PRODUTOR", "COLETOR", "RECEPTOR"],
-  },
-  {
-    icon: BarChart3,
-    label: "Relatórios",
-    path: "/relatorios",
     allowedTypes: ["PRODUTOR", "COLETOR", "RECEPTOR"],
   },
   {
