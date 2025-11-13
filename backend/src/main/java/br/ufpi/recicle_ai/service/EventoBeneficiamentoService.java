@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,14 @@ public class EventoBeneficiamentoService {
                 .orElseThrow(() -> new RegraDeNegocioException("Evento de Beneficiamento não encontrado!"));
     }
 
+    @Transactional(readOnly = true)
+    public List<EventoBeneficiamentoDTO> findByBairro(String bairro) {
+        List<EventoBeneficiamento> eventos = eventoBeneficiamentoRepository.findByBairro(bairro);
+        return eventos.stream()
+                .map(eventoBeneficiamentoMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+  
     @Transactional
     public EventoBeneficiamentoDTO update(Long id, EventoBeneficiamentoForm form) {
         return eventoBeneficiamentoRepository.findById(id).map(evento -> {
@@ -52,5 +63,4 @@ public class EventoBeneficiamentoService {
             return eventoBeneficiamentoMapper.toDTO(evento);
         }).orElseThrow(() -> new RegraDeNegocioException("Evento de Beneficiamento não encontrado!"));
     }
-
 }

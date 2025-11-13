@@ -53,24 +53,24 @@ class EventoColetaServiceTest {
     @InjectMocks
     private EventoColetaService eventoColetaService;
 
-    private Coletor coletor;
-    private Produtor produtor;
+    private br.ufpi.recicle_ai.domain.model.Coletor coletor;
+    private br.ufpi.recicle_ai.domain.model.Produtor produtor;
     private Coleta coleta;
     private EventoColeta eventoColeta1;
     private EventoColeta eventoColeta2;
     private EventoColetaDTO eventoColetaDTO1;
     private EventoColetaDTO eventoColetaDTO2;
     private ItemEventoColeta itemEventoColeta;
-    private Item item;
+    private br.ufpi.recicle_ai.domain.model.item.Item item;
 
     @BeforeEach
     void setUp() {
         // Preparar dados de teste
-        coletor = new Coletor();
+        coletor = new br.ufpi.recicle_ai.domain.model.Coletor();
         coletor.setId(1L);
         coletor.setNome("Coletor Teste");
 
-        produtor = new Produtor();
+        produtor = new br.ufpi.recicle_ai.domain.model.Produtor();
         produtor.setId(2L);
         produtor.setNome("Produtor Teste");
 
@@ -78,7 +78,7 @@ class EventoColetaServiceTest {
         coleta.setId(1L);
         coleta.setColetor(coletor);
 
-        item = new Item();
+        item = new br.ufpi.recicle_ai.domain.model.item.Item();
         item.setId(1L);
         item.setNome("Garrafa PET");
         item.setUnidade("unidade");

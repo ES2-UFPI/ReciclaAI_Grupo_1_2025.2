@@ -89,3 +89,26 @@ export interface InventoryItem {
   pessoaId: number;
   tipoPessoa: TipoPessoa;
 }
+
+export interface PontoBeneficiamento {
+  id: number;
+  logradouro: string;
+  numero: string;
+  bairro: string;
+  cep: string;
+}
+
+export interface ItemBeneficiamento {
+  id: number;
+  quantidadeMinima: number;
+  item: Item;
+}
+
+export interface Beneficiamento {
+  id: number;
+  receptor: Agente;
+  dataInicio: string;
+  dataFim: string;
+  pontoColeta: PontoBeneficiamento;
+  itensBeneficiamento: ItemBeneficiamento[];
+}

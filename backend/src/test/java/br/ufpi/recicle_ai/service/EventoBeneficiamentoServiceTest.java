@@ -1,13 +1,10 @@
 package br.ufpi.recicle_ai.service;
 
 import br.ufpi.recicle_ai.domain.dto.beneficiamento.EventoBeneficiamentoDTO;
-import br.ufpi.recicle_ai.domain.form.beneficiamento.EventoBeneficiamentoForm;
-import br.ufpi.recicle_ai.domain.model.Coletor;
 import br.ufpi.recicle_ai.domain.model.beneficiamento.Beneficiamento;
 import br.ufpi.recicle_ai.domain.model.beneficiamento.EventoBeneficiamento;
 import br.ufpi.recicle_ai.domain.model.coleta.PontoColeta;
 import br.ufpi.recicle_ai.domain.enuns.StatusBeneficiamentoEnum;
-import br.ufpi.recicle_ai.exception.RegraDeNegocioException;
 import br.ufpi.recicle_ai.mapper.EventoBeneficiamentoMapper;
 import br.ufpi.recicle_ai.repository.EventoBeneficiamentoRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
