@@ -7,203 +7,48 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Search, Calendar, MapPin, Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-
-// Interfaces mockadas
-interface Item {
-  id: number;
-  nome: string;
-  unidade: string;
-}
-
-interface ItemBeneficiamento {
-  id: number;
-  item: Item;
-  quantidadeMinima: number;
-}
-
-interface PontoBeneficiamento {
-  id: number;
-  logradouro: string;
-  numero: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
-}
-
-interface Receptor {
-  id: number;
-  nome: string;
-  email: string;
-}
-
-interface Beneficiamento {
-  id: number;
-  dataInicio: string;
-  dataFim: string;
-  pontoColeta: PontoBeneficiamento;
-  receptor: Receptor;
-  itensBeneficiamento: ItemBeneficiamento[];
-}
-
-interface ItemEventoBeneficiamento {
-  id: number;
-  item: Item;
-  quantidade: number;
-}
-
-interface EventoBeneficiamento {
-  id: number;
-  beneficiamento: Beneficiamento;
-  itens: ItemEventoBeneficiamento[];
-}
-
-// Mock data - Beneficiamentos agendados pelo coletor
-const mockEventosBeneficiamento: EventoBeneficiamento[] = [
-  {
-    id: 1,
-    beneficiamento: {
-      id: 1,
-      dataInicio: '2025-11-20T08:00:00',
-      dataFim: '2025-11-20T17:00:00',
-      pontoBeneficiamento: {
-        id: 1,
-        logradouro: 'Av. Industrial',
-        numero: '1500',
-        bairro: 'Distrito Industrial',
-        cidade: 'Teresina',
-        estado: 'PI',
-        cep: '64000-000',
-      },
-      receptor: {
-        id: 1,
-        nome: 'Recicladora Central',
-        email: 'contato@recicladoaracentral.com',
-      },
-      itensBeneficiamento: [
-        {
-          id: 1,
-          item: { id: 1, nome: 'Plástico PET', unidade: 'kg' },
-          quantidadeMinima: 50,
-        },
-        {
-          id: 2,
-          item: { id: 2, nome: 'Alumínio', unidade: 'kg' },
-          quantidadeMinima: 30,
-        },
-      ],
-    },
-    itens: [
-      {
-        id: 1,
-        item: { id: 1, nome: 'Plástico PET', unidade: 'kg' },
-        quantidade: 75,
-      },
-      {
-        id: 2,
-        item: { id: 2, nome: 'Alumínio', unidade: 'kg' },
-        quantidade: 45,
-      },
-    ],
-  },
-];
-
-// Mock data - Beneficiamentos disponíveis para busca
-const mockBeneficiamentosDisponiveis: Beneficiamento[] = [
-  {
-    id: 2,
-    dataInicio: '2025-11-22T09:00:00',
-    dataFim: '2025-11-22T16:00:00',
-    pontoBeneficiamento: {
-      id: 2,
-      logradouro: 'Rua da Reciclagem',
-      numero: '200',
-      bairro: 'Centro',
-      cidade: 'Teresina',
-      estado: 'PI',
-      cep: '64001-000',
-    },
-    receptor: {
-      id: 2,
-      nome: 'EcoProcessamento Ltda',
-      email: 'contato@ecoprocessamento.com',
-    },
-    itensBeneficiamento: [
-      {
-        id: 3,
-        item: { id: 3, nome: 'Papel', unidade: 'kg' },
-        quantidadeMinima: 100,
-      },
-      {
-        id: 4,
-        item: { id: 4, nome: 'Papelão', unidade: 'kg' },
-        quantidadeMinima: 80,
-      },
-      {
-        id: 5,
-        item: { id: 5, nome: 'Vidro', unidade: 'kg' },
-        quantidadeMinima: 40,
-      },
-    ],
-  },
-  {
-    id: 3,
-    dataInicio: '2025-11-25T08:00:00',
-    dataFim: '2025-11-25T15:00:00',
-    pontoBeneficiamento: {
-      id: 3,
-      logradouro: 'Av. dos Trabalhadores',
-      numero: '850',
-      bairro: 'Centro',
-      cidade: 'Teresina',
-      estado: 'PI',
-      cep: '64002-000',
-    },
-    receptor: {
-      id: 3,
-      nome: 'ReciclaTech Industrial',
-      email: 'contato@reciclatech.com',
-    },
-    itensBeneficiamento: [
-      {
-        id: 6,
-        item: { id: 6, nome: 'Metal', unidade: 'kg' },
-        quantidadeMinima: 60,
-      },
-      {
-        id: 7,
-        item: { id: 1, nome: 'Plástico PET', unidade: 'kg' },
-        quantidadeMinima: 70,
-      },
-    ],
-  },
-];
+import { useAuth } from "@/contexts/AuthContext";
+import { 
+  listarBeneficiamentosAgendadosColetor,
+  buscarBeneficiamentosPorBairro,
+  criarEventoBeneficiamento,
+  deletarEventoBeneficiamento
+} from "@/services/beneficiamentoService";
+import { EventoBeneficiamento, Beneficiamento } from "@/types/api";
 
 const AgendarBeneficiamento = () => {
   const [beneficiamentosAgendados, setBeneficiamentosAgendados] = useState<EventoBeneficiamento[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [bairro, setBairro] = useState("");
   const [resultados, setResultados] = useState<Beneficiamento[]>([]);
   const [buscaRealizada, setBuscaRealizada] = useState(false);
   const [loadingBusca, setLoadingBusca] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchBeneficiamentos = async () => {
+      if (!user) {
+        setError('Usuário não autenticado');
+        setLoading(false);
+        return;
+      }
+
       try {
-        // Simula delay de API
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setBeneficiamentosAgendados(mockEventosBeneficiamento);
+        const response = await listarBeneficiamentosAgendadosColetor(user.pessoaId);
+        setBeneficiamentosAgendados(response);
       } catch (err) {
-        console.error('Erro ao carregar beneficiamentos agendados:', err);
+        setError('Erro ao carregar beneficiamentos agendados');
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBeneficiamentos();
-  }, []);
+  }, [user]);
 
   const buscarEventos = async () => {
     if (!bairro.trim()) return;
@@ -212,15 +57,8 @@ const AgendarBeneficiamento = () => {
     setBuscaRealizada(true);
     
     try {
-      // Simula delay de API
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Filtra beneficiamentos por bairro (case insensitive)
-      const resultadosFiltrados = mockBeneficiamentosDisponiveis.filter(
-        b => b.pontoBeneficiamento.bairro.toLowerCase().includes(bairro.toLowerCase())
-      );
-      
-      setResultados(resultadosFiltrados);
+      const response = await buscarBeneficiamentosPorBairro(bairro.trim());
+      setResultados(response.content);
     } catch (err) {
       console.error(err);
       setResultados([]);
@@ -236,42 +74,45 @@ const AgendarBeneficiamento = () => {
   };
 
   const selecionarEvento = async (beneficiamento: Beneficiamento) => {
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Usuário não autenticado.",
+      });
+      return;
+    }
+
     try {
-      // Simula criação do evento
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const novoEvento: EventoBeneficiamento = {
-        id: Math.floor(Math.random() * 1000),
-        beneficiamento,
-        itens: [],
-      };
-
-      console.log("Evento de beneficiamento criado (mock):", novoEvento);
-
-      // TODO: Criar página de declaração de materiais para beneficiamento
+      const eventoBeneficiamento = await criarEventoBeneficiamento(beneficiamento.id, user.pessoaId);
       navigate("/declaracao-materiais-beneficiamento", { 
         state: { 
           beneficiamento,
-          eventoBeneficiamentoId: novoEvento.id
+          eventoBeneficiamentoId: eventoBeneficiamento.id
         } 
       });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao agendar beneficiamento",
-        description: "Ocorreu um erro ao tentar agendar o beneficiamento. Tente novamente.",
-      });
+      if (error.status === 400 && error.message) {
+        toast({
+          variant: "destructive",
+          title: "Erro ao agendar beneficiamento",
+          description: error.message,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erro ao agendar beneficiamento",
+          description: "Ocorreu um erro ao tentar agendar o beneficiamento. Tente novamente.",
+        });
+      }
       console.error('Erro ao criar evento de beneficiamento:', error);
     }
   };
 
   const handleDelete = async (eventoId: number) => {
     try {
-      // Simula remoção na API
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await deletarEventoBeneficiamento(eventoId);
       setBeneficiamentosAgendados(prev => prev.filter(evento => evento.id !== eventoId));
-      
       toast({
         title: "Beneficiamento removido",
         description: "O beneficiamento foi removido com sucesso.",
@@ -291,6 +132,8 @@ const AgendarBeneficiamento = () => {
       {/* Beneficiamentos Agendados */}
       {loading ? (
         <div>Carregando beneficiamentos...</div>
+      ) : error ? (
+        <div className="text-red-500">{error}</div>
       ) : beneficiamentosAgendados.length > 0 && (
         <div className="mb-12">
           <div className="mb-6">
@@ -363,10 +206,10 @@ const AgendarBeneficiamento = () => {
                       <div>
                         <p className="text-xs text-muted-foreground mb-0.5">Local</p>
                         <p className="text-sm font-medium text-foreground">
-                          {evento.beneficiamento.pontoBeneficiamento.logradouro}, {evento.beneficiamento.pontoBeneficiamento.numero}
+                          {evento.beneficiamento.pontoColeta.logradouro}, {evento.beneficiamento.pontoColeta.numero}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {evento.beneficiamento.pontoBeneficiamento.bairro}
+                          {evento.beneficiamento.pontoColeta.bairro}
                         </p>
                       </div>
                     </div>
@@ -485,10 +328,10 @@ const AgendarBeneficiamento = () => {
                           <div>
                             <p className="text-xs text-muted-foreground mb-0.5">Endereço</p>
                             <p className="text-sm font-medium text-foreground">
-                              {beneficiamento.pontoBeneficiamento.logradouro}, {beneficiamento.pontoBeneficiamento.numero}
+                              {beneficiamento.pontoColeta.logradouro}, {beneficiamento.pontoColeta.numero}
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              {beneficiamento.pontoBeneficiamento.bairro}
+                              {beneficiamento.pontoColeta.bairro}
                             </p>
                           </div>
                         </div>

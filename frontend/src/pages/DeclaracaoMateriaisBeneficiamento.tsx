@@ -4,45 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/components/ui/use-toast";
-
-// Interfaces mockadas
-interface Item {
-  id: number;
-  nome: string;
-  unidade: string;
-}
-
-interface ItemBeneficiamento {
-  id: number;
-  item: Item;
-  quantidadeMinima: number;
-}
-
-interface PontoBeneficiamento {
-  id: number;
-  logradouro: string;
-  numero: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  cep: string;
-}
-
-interface Receptor {
-  id: number;
-  nome: string;
-  email: string;
-}
-
-interface Beneficiamento {
-  id: number;
-  dataInicio: string;
-  dataFim: string;
-  pontoBeneficiamento: PontoBeneficiamento;
-  receptor: Receptor;
-  itensBeneficiamento: ItemBeneficiamento[];
-}
+import { adicionarItemEventoBeneficiamento } from "@/services/beneficiamentoService";
+import { Beneficiamento } from "@/types/api";
 
 interface LocationState {
   beneficiamento: Beneficiamento;
@@ -52,10 +15,10 @@ interface LocationState {
 const DeclaracaoMateriaisBeneficiamento = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { beneficiamento, eventoBeneficiamentoId } = location.state as LocationState;
   const [quantidades, setQuantidades] = useState<Record<number, number>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleQuantidadeChange = (itemId: number, value: string) => {
     setQuantidades((prev) => ({
@@ -67,42 +30,25 @@ const DeclaracaoMateriaisBeneficiamento = () => {
   const handleSubmit = async () => {
     try {
       setSubmitting(true);
+      setError(null);
 
-      // Valida se pelo menos um item foi informado
-      const itensInformados = Object.entries(quantidades).filter(([_, quantidade]) => quantidade > 0);
-      
-      if (itensInformados.length === 0) {
-        toast({
-          variant: "destructive",
-          title: "Nenhum material informado",
-          description: "Informe ao menos um material para continuar.",
-        });
-        return;
-      }
-
-      // Mock: Simula envio para API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const itensAdicionados = itensInformados.map(([itemId, quantidade]) => ({
-        eventoBeneficiamentoId,
-        itemId: Number(itemId),
-        quantidade,
-      }));
-
-      console.log("Materiais adicionados ao evento de beneficiamento (mock):", itensAdicionados);
-
-      toast({
-        title: "Materiais confirmados",
-        description: "Os materiais foram registrados com sucesso.",
-      });
+      // Submit each item
+      await Promise.all(
+        Object.entries(quantidades).map(([itemId, quantidade]) => {
+          if (quantidade > 0) {
+            return adicionarItemEventoBeneficiamento(
+              eventoBeneficiamentoId,
+              Number(itemId),
+              quantidade
+            );
+          }
+        })
+      );
 
       navigate("/agendar-beneficiamento");
     } catch (err: any) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao salvar materiais",
-        description: err.message || "Erro ao salvar os materiais. Tente novamente.",
-      });
+      // Use the error message from the API response if available
+      setError(err.message || "Erro ao salvar os materiais. Tente novamente.");
       console.error(err);
     } finally {
       setSubmitting(false);
@@ -200,6 +146,12 @@ const DeclaracaoMateriaisBeneficiamento = () => {
           </div>
         </CardContent>
       </Card>
+
+      {error && (
+        <div className="bg-destructive/10 text-destructive p-3 rounded-md mb-6">
+          {error}
+        </div>
+      )}
 
       <div className="flex gap-4">
         <Button onClick={handleSubmit} disabled={submitting} className="flex-1">

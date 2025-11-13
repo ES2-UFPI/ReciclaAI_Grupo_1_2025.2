@@ -3,6 +3,8 @@ package br.ufpi.recicle_ai.controller.beneficiamento;
 import br.ufpi.recicle_ai.domain.dto.beneficiamento.BeneficiamentoDTO;
 import br.ufpi.recicle_ai.domain.form.beneficiamento.BeneficiamentoForm;
 import br.ufpi.recicle_ai.service.BeneficiamentoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,5 +38,15 @@ public class BeneficiamentoController {
     @GetMapping("/receptor/{id}")
     public ResponseEntity<Page<BeneficiamentoDTO>> findByReceptor(@PathVariable Long id, Pageable pageable) {
         return ResponseEntity.ok(service.findByReceptor(id, pageable));
+    }
+
+    @GetMapping("/por-bairro")
+    @Operation(summary = "Listar beneficiamentos por bairro", description = "Retorna uma página de todos os beneficiamentos de um bairro específico")
+    @Parameter(name = "bairro", description = "Nome do bairro para busca (case-insensitive)", example = "Centro")
+    public ResponseEntity<Page<BeneficiamentoDTO>> findByBairro(
+            @RequestParam String bairro,
+            Pageable pageable) {
+        Page<BeneficiamentoDTO> beneficiamentos = service.findByBairro(bairro, pageable);
+        return ResponseEntity.ok(beneficiamentos);
     }
 }

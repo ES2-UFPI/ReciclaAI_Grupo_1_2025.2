@@ -35,7 +35,7 @@ public class ColetaService {
 
     @Transactional(readOnly = true)
     public Page<ColetaDTO> findByBairro(String bairro, Pageable pageable) {
-        return coletaRepository.findAllByPontoColetaBairroContainingIgnoreCase(bairro, pageable)
+        return coletaRepository.findAllByPontoColetaBairroContainingIgnoreCaseOrderByDataInicioAsc(bairro, pageable)
                 .map(coletaMapper::toDTO);
     }
 
