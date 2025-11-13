@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ColetaRepository extends JpaRepository<Coleta, Long> {
     Page<Coleta> findAllByPontoColetaBairroContainingIgnoreCase(String bairro, Pageable pageable);
-    Page<Coleta> findAllByColetor_id(long id, Pageable pageable);
+    Page<Coleta> findAllByColetorIdOrderByDataInicioAsc(Long coletorId, Pageable pageable);
 }
