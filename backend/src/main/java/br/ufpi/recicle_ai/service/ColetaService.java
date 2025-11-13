@@ -40,8 +40,8 @@ public class ColetaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ColetaDTO> findByColetor(long id, Pageable pageable) {
-        return coletaRepository.findAllByColetor_id(id, pageable)
+    public Page<ColetaDTO> findByColetor(Long id, Pageable pageable) {
+        return coletaRepository.findAllByColetorIdOrderByDataInicioAsc(id, pageable)
                 .map(coletaMapper::toDTO);
     }
   

@@ -5,7 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import AgendarColeta from "./pages/AgendarColeta";
+import AgendarBeneficiamento from "./pages/AgendarBeneficiamento";
 import DeclaracaoMateriais from "./pages/DeclaracaoMateriais";
+import DeclaracaoMateriaisBeneficiamento from "./pages/DeclaracaoMateriaisBeneficiamento";
 import Inventario from "./pages/Inventario";
 import Historico from "./pages/Historico";
 import Relatorios from "./pages/Relatorios";
@@ -48,6 +50,7 @@ function App() {
               >
                 <Route index element={<Index />} />
                 <Route path="agendar-coleta" element={<AgendarColeta />} />
+                <Route path="agendar-beneficiamento" element={<AgendarBeneficiamento />} />
                 <Route path="inventario" element={<InventoryList />} />
                 <Route path="coletas-agendadas" element={<ColetasAgendadasColetor />} />
                 <Route path="historico" element={<Historico />} />
@@ -56,6 +59,10 @@ function App() {
                 <Route
                   path="declaracao-materiais"
                   element={<DeclaracaoMateriais />}
+                />
+                <Route
+                  path="declaracao-materiais-beneficiamento"
+                  element={<DeclaracaoMateriaisBeneficiamento />}
                 />
                 <Route
                   path="coletas-agendadas-coletor"
