@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import br.ufpi.recicle_ai.domain.form.beneficiamento.BeneficiamentoForm;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class BeneficiamentoService {
@@ -48,5 +51,13 @@ public class BeneficiamentoService {
     public Beneficiamento findEntityById(Long id){
         return repository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Beneficiamento não encontrado!"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<BeneficiamentoDTO> findEntityByReceptorId(Long id){
+        return repository.findAllByReceptor_id(id)
+                .stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 }
