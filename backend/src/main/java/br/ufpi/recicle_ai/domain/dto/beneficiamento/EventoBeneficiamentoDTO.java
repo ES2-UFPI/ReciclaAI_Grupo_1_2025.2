@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -16,6 +16,6 @@ public class EventoBeneficiamentoDTO {
     private Long id;
     private BeneficiamentoDTO beneficiamento;
     private ColetorDTO coletor;
-    private StatusBeneficiamentoEnum status ;
-    private List<ItemEventoBeneficiamentoDTO> itens ;
+    private StatusBeneficiamentoEnum status = StatusBeneficiamentoEnum.AGENDADA;
+    private List<ItemEventoBeneficiamentoDTO> itens = new ArrayList<>();
 }
