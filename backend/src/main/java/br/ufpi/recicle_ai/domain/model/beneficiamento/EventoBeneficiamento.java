@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -33,5 +34,5 @@ public class EventoBeneficiamento {
     private StatusBeneficiamentoEnum status;
 
     @OneToMany(mappedBy = "eventoBeneficiamento", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemEventoBeneficiamento> itens;
+    private List<ItemEventoBeneficiamento> itens = new ArrayList<>();
 }

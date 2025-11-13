@@ -1,7 +1,9 @@
 package br.ufpi.recicle_ai.controller.beneficiamento;
 
 import br.ufpi.recicle_ai.domain.dto.beneficiamento.EventoBeneficiamentoDTO;
+import br.ufpi.recicle_ai.domain.dto.beneficiamento.ItemEventoBeneficiamentoDTO;
 import br.ufpi.recicle_ai.domain.form.beneficiamento.EventoBeneficiamentoForm;
+import br.ufpi.recicle_ai.domain.form.beneficiamento.ItemEventoBeneficiamentoForm;
 import br.ufpi.recicle_ai.service.EventoBeneficiamentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +24,13 @@ public class EventoBeneficiamentoController {
     public ResponseEntity<EventoBeneficiamentoDTO> visualizarEvento(@PathVariable Long id) {
         EventoBeneficiamentoDTO dto = eventoBeneficiamentoService.findById(id);
         return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping
+    ResponseEntity<EventoBeneficiamentoDTO> create(@RequestBody @Valid EventoBeneficiamentoForm form) {
+        EventoBeneficiamentoDTO dto = eventoBeneficiamentoService.create(form);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.getId()).toUri();
+        return ResponseEntity.created(uri).body(dto);
     }
 }
