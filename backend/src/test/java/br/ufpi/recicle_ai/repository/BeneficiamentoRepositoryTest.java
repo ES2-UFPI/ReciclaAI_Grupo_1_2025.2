@@ -8,10 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -33,8 +37,8 @@ public class BeneficiamentoRepositoryTest {
     }
 
     @Test
-    @DisplayName("Deve salvar e buscar Beneficiamento por ID do receptor")
-    void deveBuscarBeneficiamentosPorReceptorId() {
+    @DisplayName("Deve buscar beneficiamentos por ID do receptor e ordenar por data de início ASC")
+    void deveBuscarBeneficiamentosPorReceptorIdOrdenadoPorData() {
         // Arrange
         PontoColeta ponto = criarPontoColeta();
 
@@ -42,52 +46,48 @@ public class BeneficiamentoRepositoryTest {
         receptor1.setNome("Centro de Reciclagem XYZ");
         entityManager.persist(receptor1);
 
-        Receptor receptor2 = new Receptor();
-        receptor2.setNome("Cooperativa Verde");
-        entityManager.persist(receptor2);
+        // Criando beneficiamentos com datas diferentes para testar a ordenação
+        Beneficiamento b2 = new Beneficiamento();
+        b2.setReceptor(receptor1);
+        b2.setPontoColeta(ponto);
+        b2.setDataInicio(LocalDateTime.now().plusDays(1)); // Data futura
+        entityManager.persist(b2);
 
         Beneficiamento b1 = new Beneficiamento();
         b1.setReceptor(receptor1);
         b1.setPontoColeta(ponto);
-        b1.setDataInicio(LocalDateTime.now());
+        b1.setDataInicio(LocalDateTime.now()); // Data atual
         entityManager.persist(b1);
 
-        Beneficiamento b2 = new Beneficiamento();
-        b2.setReceptor(receptor1);
-        b2.setPontoColeta(ponto);
-        b2.setDataInicio(LocalDateTime.now());
-        entityManager.persist(b2);
-
-        Beneficiamento b3 = new Beneficiamento();
-        b3.setReceptor(receptor2);
-        b3.setPontoColeta(ponto);
-        b3.setDataInicio(LocalDateTime.now());
-        entityManager.persist(b3);
-
         entityManager.flush();
-        entityManager.clear();
+
+        Pageable pageable = PageRequest.of(0, 10);
 
         // Act
-        List<Beneficiamento> resultado = repository.findAllByReceptor_id(receptor1.getId());
+        Page<Beneficiamento> resultado = repository.findAllByReceptorIdOrderByDataInicioAsc(receptor1.getId(), pageable);
 
         // Assert
         assertNotNull(resultado);
-        assertEquals(2, resultado.size());
-        assertTrue(resultado.stream().allMatch(b -> b.getReceptor().getId().equals(receptor1.getId())));
+        assertEquals(2, resultado.getTotalElements());
+        List<Beneficiamento> conteudo = resultado.getContent();
+        // Verifica se o primeiro item da lista é o que tem a data mais antiga
+        assertThat(conteudo.get(0).getDataInicio()).isBefore(conteudo.get(1).getDataInicio());
+        assertTrue(conteudo.stream().allMatch(b -> b.getReceptor().getId().equals(receptor1.getId())));
     }
 
     @Test
-    @DisplayName("Deve retornar lista vazia se receptor não tiver beneficiamentos")
-    void deveRetornarListaVaziaQuandoNaoExistirBeneficiamentosParaReceptor() {
+    @DisplayName("Deve retornar página vazia se receptor não tiver beneficiamentos")
+    void deveRetornarPaginaVaziaQuandoNaoExistirBeneficiamentosParaReceptor() {
         // Arrange
         Receptor receptor = new Receptor();
         receptor.setNome("Receptor Inativo");
         entityManager.persist(receptor);
-
         entityManager.flush();
 
+        Pageable pageable = PageRequest.of(0, 10);
+
         // Act
-        List<Beneficiamento> resultado = repository.findAllByReceptor_id(receptor.getId());
+        Page<Beneficiamento> resultado = repository.findAllByReceptorIdOrderByDataInicioAsc(receptor.getId(), pageable);
 
         // Assert
         assertNotNull(resultado);
