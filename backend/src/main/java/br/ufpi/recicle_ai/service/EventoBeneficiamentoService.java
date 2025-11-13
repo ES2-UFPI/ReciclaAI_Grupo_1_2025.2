@@ -2,6 +2,7 @@ package br.ufpi.recicle_ai.service;
 
 import br.ufpi.recicle_ai.domain.dto.beneficiamento.EventoBeneficiamentoDTO;
 import br.ufpi.recicle_ai.domain.enuns.StatusBeneficiamentoEnum;
+import br.ufpi.recicle_ai.domain.form.beneficiamento.EventoBeneficiamentoForm;
 import br.ufpi.recicle_ai.domain.model.Coletor;
 import br.ufpi.recicle_ai.domain.model.beneficiamento.Beneficiamento;
 import br.ufpi.recicle_ai.domain.model.beneficiamento.EventoBeneficiamento;
@@ -28,6 +29,7 @@ public class EventoBeneficiamentoService {
     private final BeneficiamentoService beneficiamentoService;
     private final ColetorService coletorService;
 
+    @Transactional(readOnly = true)
     public EventoBeneficiamentoDTO findById(Long id){
         return eventoBeneficiamentoMapper.toDTO(findEntityById(id));
     }
@@ -56,5 +58,24 @@ public class EventoBeneficiamentoService {
                 .map(eventoBeneficiamentoMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
+  
+    @Transactional
+    public EventoBeneficiamentoDTO update(Long id, EventoBeneficiamentoForm form) {
+        return eventoBeneficiamentoRepository.findById(id).map(evento -> {
+            // Atualiza o beneficiamento se foi alterado
+            if (!evento.getBeneficiamento().getId().equals(form.getBeneficiamentoId())) {
+                Beneficiamento beneficiamento = beneficiamentoService.findEntityById(form.getBeneficiamentoId());
+                evento.setBeneficiamento(beneficiamento);
+            }
+            
+            // Atualiza o coletor se foi alterado
+            if (!evento.getColetor().getId().equals(form.getColetorId())) {
+                Coletor coletor = coletorService.findEntityById(form.getColetorId());
+                evento.setColetor(coletor);
+            }
+            
+            evento = eventoBeneficiamentoRepository.save(evento);
+            return eventoBeneficiamentoMapper.toDTO(evento);
+        }).orElseThrow(() -> new RegraDeNegocioException("Evento de Beneficiamento não encontrado!"));
+    }
 }

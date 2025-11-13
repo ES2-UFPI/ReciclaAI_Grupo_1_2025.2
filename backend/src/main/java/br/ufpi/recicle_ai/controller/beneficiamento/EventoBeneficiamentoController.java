@@ -69,4 +69,17 @@ public class EventoBeneficiamentoController {
         
         return ResponseEntity.ok(eventos);
     }
+  
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualizar evento de beneficiamento", description = "Atualiza um evento de beneficiamento existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Evento atualizado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Evento não encontrado")
+    })
+    public ResponseEntity<EventoBeneficiamentoDTO> update(
+            @PathVariable Long id, 
+            @RequestBody @Valid EventoBeneficiamentoForm form) {
+        EventoBeneficiamentoDTO dto = eventoBeneficiamentoService.update(id, form);
+        return ResponseEntity.ok(dto);
+    }
 }
