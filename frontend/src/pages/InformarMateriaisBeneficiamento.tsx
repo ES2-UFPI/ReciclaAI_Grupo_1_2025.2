@@ -5,24 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
+import { listarTodosItens } from "@/services/coletaService";
+import { adicionarItemBeneficiamento } from "@/services/beneficiamentoService";
+import { Item } from "@/types/api";
 
 interface LocationState {
   beneficiamentoId: number;
 }
-
-interface Item {
-  id: number;
-  nome: string;
-  unidade: string;
-}
-
-// Mock data - será substituído pela API posteriormente
-const mockItems: Item[] = [
-  { id: 1, nome: "Vidro", unidade: "kg" },
-  { id: 2, nome: "Plástico PET", unidade: "kg" },
-  { id: 3, nome: "Alumínio", unidade: "kg" },
-  { id: 4, nome: "Papelão", unidade: "kg" }
-];
 
 const InformarMateriaisBeneficiamento = () => {
   const location = useLocation();
@@ -37,9 +26,8 @@ const InformarMateriaisBeneficiamento = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        // Simula delay de API
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setItems(mockItems);
+        const data = await listarTodosItens();
+        setItems(data);
       } catch (error) {
         toast({
           variant: "destructive",
@@ -95,16 +83,16 @@ const InformarMateriaisBeneficiamento = () => {
         return;
       }
 
-      // Mock: Simula envio para API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const materiaisAdicionados = itemsToSubmit.map(([itemId, quantidadeMinima]) => ({
-        beneficiamentoId,
-        itemId: Number(itemId),
-        quantidadeMinima,
-      }));
-
-      console.log("Materiais adicionados ao beneficiamento (mock):", materiaisAdicionados);
+      // Submit each item
+      await Promise.all(
+        itemsToSubmit.map(([itemId, quantidadeMinima]) =>
+          adicionarItemBeneficiamento({
+            beneficiamentoId,
+            itemId: Number(itemId),
+            quantidadeMinima,
+          })
+        )
+      );
 
       toast({
         title: "Beneficiamento criado com sucesso",

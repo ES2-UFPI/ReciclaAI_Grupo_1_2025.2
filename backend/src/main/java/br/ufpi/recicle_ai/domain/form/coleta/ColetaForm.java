@@ -23,10 +23,8 @@ public class ColetaForm {
     @NotNull
     private Long coletorId;
     @NotNull
-    @Future(message = "A data de início deve estar no futuro")
     private LocalDateTime dataInicio;
     @NotNull
-    @Future(message = "A data de fim deve estar no futuro")
     private LocalDateTime dataFim;
     @NotNull
     private PontoColeta pontoColeta;

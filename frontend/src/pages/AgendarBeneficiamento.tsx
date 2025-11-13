@@ -41,7 +41,7 @@ interface Beneficiamento {
   id: number;
   dataInicio: string;
   dataFim: string;
-  pontoBeneficiamento: PontoBeneficiamento;
+  pontoColeta: PontoBeneficiamento;
   receptor: Receptor;
   itensBeneficiamento: ItemBeneficiamento[];
 }

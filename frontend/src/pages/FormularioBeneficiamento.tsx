@@ -6,10 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft } from "lucide-react";
+import { criarBeneficiamento } from "@/services/beneficiamentoService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const FormularioBeneficiamento = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     dataInicio: "",
@@ -24,35 +27,41 @@ const FormularioBeneficiamento = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Usuário não autenticado.",
+      });
+      return;
+    }
+
     setSubmitting(true);
 
     try {
-      // Simula delay de API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const dataInicio = `${formData.dataInicio}T${formData.horaInicio}:00`;
+      const dataFim = `${formData.dataFim}T${formData.horaFim}:00`;
 
-      // Mock: Simula criação do beneficiamento
-      const beneficiamentoMock = {
-        id: Math.floor(Math.random() * 1000),
-        dataInicio: `${formData.dataInicio}T${formData.horaInicio}:00`,
-        dataFim: `${formData.dataFim}T${formData.horaFim}:00`,
-        pontoBeneficiamento: {
+      const beneficiamento = await criarBeneficiamento({
+        receptorId: user.pessoaId,
+        dataInicio,
+        dataFim,
+        pontoColeta: {
           logradouro: formData.logradouro,
           numero: formData.numero,
           bairro: formData.bairro,
           cep: formData.cep,
         },
-      };
-
-      console.log("Beneficiamento criado (mock):", beneficiamentoMock);
+      });
 
       toast({
         title: "Beneficiamento criado",
         description: "Agora informe os materiais aceitos.",
       });
 
-      // TODO: Criar página de informar materiais do beneficiamento
       navigate("/informar-materiais-beneficiamento", {
-        state: { beneficiamentoId: beneficiamentoMock.id },
+        state: { beneficiamentoId: beneficiamento.id },
       });
     } catch (error: any) {
       toast({
