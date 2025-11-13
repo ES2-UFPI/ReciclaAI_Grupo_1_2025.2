@@ -1,13 +1,9 @@
 package br.ufpi.recicle_ai.controller.beneficiamento;
 
-import br.ufpi.recicle_ai.domain.dto.MensagemDTO;
 import br.ufpi.recicle_ai.domain.dto.beneficiamento.EventoBeneficiamentoDTO;
-import br.ufpi.recicle_ai.domain.dto.beneficiamento.ItemEventoBeneficiamentoDTO;
 import br.ufpi.recicle_ai.domain.form.beneficiamento.EventoBeneficiamentoForm;
-import br.ufpi.recicle_ai.domain.form.beneficiamento.ItemEventoBeneficiamentoForm;
 import br.ufpi.recicle_ai.service.EventoBeneficiamentoService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -42,44 +38,34 @@ public class EventoBeneficiamentoController {
     }
 
     @PostMapping
-    ResponseEntity<EventoBeneficiamentoDTO> create(@RequestBody @Valid EventoBeneficiamentoForm form) {
+    public ResponseEntity<EventoBeneficiamentoDTO> create(@RequestBody @Valid EventoBeneficiamentoForm form) {
         EventoBeneficiamentoDTO dto = eventoBeneficiamentoService.create(form);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
-  
-    @GetMapping("/bairro/{bairro}")
-    @Operation(summary = "Listar eventos por bairro", description = "Retorna todos os eventos de beneficiamento de um bairro específico")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de eventos retornada com sucesso",
-                content = @Content(schema = @Schema(implementation = EventoBeneficiamentoDTO.class))),
-        @ApiResponse(responseCode = "200", description = "Nenhum evento encontrado para o bairro informado",
-                content = @Content(schema = @Schema(implementation = MensagemDTO.class)))
-    })
-    public ResponseEntity<?> listarEventosPorBairro(
-            @Parameter(description = "Nome do bairro", example = "Centro")
-            @PathVariable String bairro) {
-        List<EventoBeneficiamentoDTO> eventos = eventoBeneficiamentoService.findByBairro(bairro);
-        
-        if (eventos.isEmpty()) {
-            MensagemDTO mensagem = new MensagemDTO("Não existem eventos de beneficiamento no bairro: " + bairro);
-            return ResponseEntity.ok(mensagem);
-        }
-        
-        return ResponseEntity.ok(eventos);
+
+    @GetMapping("/coletor/{id}")
+    @Operation(summary = "Listar eventos por Coletor", description = "Retorna todos os eventos de beneficiamento de um coletor específico")
+    public ResponseEntity<List<EventoBeneficiamentoDTO>> findAllByColetorId(@PathVariable Long id) {
+        return ResponseEntity.ok(eventoBeneficiamentoService.findAllByColetorId(id));
     }
-  
-    @PutMapping("/{id}")
-    @Operation(summary = "Atualizar evento de beneficiamento", description = "Atualiza um evento de beneficiamento existente")
+
+    @GetMapping("/receptor/{id}")
+    @Operation(summary = "Listar eventos por Receptor", description = "Retorna todos os eventos de beneficiamento de um receptor específico")
+    public ResponseEntity<List<EventoBeneficiamentoDTO>> findAllByReceptorId(@PathVariable Long id) {
+        return ResponseEntity.ok(eventoBeneficiamentoService.findAllByReceptorId(id));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar evento de beneficiamento", description = "Deleta um evento de beneficiamento pelo ID e restitui os itens ao coletor")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Evento atualizado com sucesso"),
+        @ApiResponse(responseCode = "204", description = "Evento deletado com sucesso"),
+        @ApiResponse(responseCode = "400", description = "Não é possível deletar evento concluído", content = @Content(schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "404", description = "Evento não encontrado")
     })
-    public ResponseEntity<EventoBeneficiamentoDTO> update(
-            @PathVariable Long id, 
-            @RequestBody @Valid EventoBeneficiamentoForm form) {
-        EventoBeneficiamentoDTO dto = eventoBeneficiamentoService.update(id, form);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        eventoBeneficiamentoService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

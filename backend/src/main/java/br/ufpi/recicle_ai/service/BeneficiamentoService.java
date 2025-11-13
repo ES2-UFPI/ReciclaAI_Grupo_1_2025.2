@@ -53,4 +53,10 @@ public class BeneficiamentoService {
         return repository.findAllByReceptorIdOrderByDataInicioAsc(id, pageable)
                 .map(beneficiamentomapper::toDTO);
     }
+
+    @Transactional(readOnly = true)
+    public Page<BeneficiamentoDTO> findByBairro(String bairro, Pageable pageable) {
+        return repository.findAllByPontoColetaBairroContainingIgnoreCaseOrderByDataInicioAsc(bairro, pageable)
+                .map(beneficiamentomapper::toDTO);
+    }
 }

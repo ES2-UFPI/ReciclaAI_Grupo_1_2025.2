@@ -112,3 +112,17 @@ export interface Beneficiamento {
   pontoColeta: PontoBeneficiamento;
   itensBeneficiamento: ItemBeneficiamento[];
 }
+
+export interface EventoBeneficiamento {
+  id: number;
+  beneficiamento: Beneficiamento;
+  coletor: Agente;
+  status: 'AGENDADA' | 'CANCELADA' | 'CONCLUIDA';
+  itens: ItemEventoBeneficiamento[];
+}
+
+export interface ItemEventoBeneficiamento {
+  id: number;
+  quantidade: number;
+  item: Item;
+}

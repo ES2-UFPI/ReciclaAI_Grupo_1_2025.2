@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BeneficiamentoRepository extends JpaRepository<Beneficiamento, Long> {
     Page<Beneficiamento> findAllByReceptorIdOrderByDataInicioAsc(Long receptorId, Pageable pageable);
+    Page<Beneficiamento> findAllByPontoColetaBairroContainingIgnoreCaseOrderByDataInicioAsc(String bairro, Pageable pageable);
 }
