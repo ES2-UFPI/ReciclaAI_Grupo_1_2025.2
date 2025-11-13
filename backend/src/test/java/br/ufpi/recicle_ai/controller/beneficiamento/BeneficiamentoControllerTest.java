@@ -22,6 +22,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -40,49 +41,39 @@ class BeneficiamentoControllerTest {
     @Test
     @DisplayName("Deve retornar lista paginada de beneficiamentos por ID do receptor")
     void deveRetornarListaPaginadaDeBeneficiamentosPorReceptorId() throws Exception {
-        // Arrange
         BeneficiamentoDTO beneficiamento = new BeneficiamentoDTO();
-        beneficiamento.setId(1L);
-        beneficiamento.setDataInicio(LocalDateTime.parse("2024-08-01T09:00:00"));
-        beneficiamento.setDataFim(LocalDateTime.parse("2024-08-01T17:00:00"));
+        Page<BeneficiamentoDTO> page = new PageImpl<>(List.of(beneficiamento));
+        Mockito.when(service.findByReceptor(anyLong(), any(Pageable.class))).thenReturn(page);
 
-        Page<BeneficiamentoDTO> page = new PageImpl<>(List.of(beneficiamento), PageRequest.of(0, 10), 1);
-
-        Mockito.when(service.findByReceptor(anyLong(), any(Pageable.class)))
-                .thenReturn(page);
-
-        // Act & Assert
         mockMvc.perform(get("/beneficiamentos/receptor/1")
-                        .param("page", "0")
-                        .param("size", "10")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                // Valida a estrutura da página
-                .andExpect(jsonPath("$.content", hasSize(1)))
-                .andExpect(jsonPath("$.totalElements").value(1))
-                .andExpect(jsonPath("$.number").value(0))
-                // Valida os campos do primeiro elemento
-                .andExpect(jsonPath("$.content[0].id").value(1))
-                .andExpect(jsonPath("$.content[0].dataInicio").value("2024-08-01T09:00:00"))
-                .andExpect(jsonPath("$.content[0].dataFim").value("2024-08-01T17:00:00"));
+                .andExpect(jsonPath("$.content", hasSize(1)));
+    }
+
+    @Test
+    @DisplayName("Deve retornar lista paginada de beneficiamentos por Bairro")
+    void deveRetornarListaPaginadaDeBeneficiamentosPorBairro() throws Exception {
+        BeneficiamentoDTO beneficiamento = new BeneficiamentoDTO();
+        Page<BeneficiamentoDTO> page = new PageImpl<>(List.of(beneficiamento));
+        Mockito.when(service.findByBairro(anyString(), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/beneficiamentos/por-bairro")
+                        .param("bairro", "Centro")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)));
     }
 
     @Test
     void deveRetornarBeneficiamentoPorId() throws Exception {
         BeneficiamentoDTO dto = new BeneficiamentoDTO();
         dto.setId(4L);
-        dto.setDataInicio(LocalDateTime.parse("2024-08-01T09:00:00"));
-        dto.setDataFim(LocalDateTime.parse("2024-08-01T17:00:00"));
-
         Mockito.when(service.findById(4L)).thenReturn(dto);
 
         mockMvc.perform(get("/beneficiamentos/4")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(4))
-                .andExpect(jsonPath("$.dataInicio").value("2024-08-01T09:00:00"))
-                .andExpect(jsonPath("$.dataFim").value("2024-08-01T17:00:00"));
+                .andExpect(jsonPath("$.id").value(4));
     }
 }

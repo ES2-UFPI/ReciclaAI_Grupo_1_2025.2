@@ -1,156 +1,132 @@
 package br.ufpi.recicle_ai.service;
 
 import br.ufpi.recicle_ai.domain.dto.beneficiamento.EventoBeneficiamentoDTO;
+import br.ufpi.recicle_ai.domain.enuns.StatusBeneficiamentoEnum;
+import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 import br.ufpi.recicle_ai.domain.form.beneficiamento.EventoBeneficiamentoForm;
 import br.ufpi.recicle_ai.domain.model.Coletor;
 import br.ufpi.recicle_ai.domain.model.beneficiamento.Beneficiamento;
 import br.ufpi.recicle_ai.domain.model.beneficiamento.EventoBeneficiamento;
-import br.ufpi.recicle_ai.domain.model.coleta.PontoColeta;
-import br.ufpi.recicle_ai.domain.enuns.StatusBeneficiamentoEnum;
 import br.ufpi.recicle_ai.exception.RegraDeNegocioException;
 import br.ufpi.recicle_ai.mapper.EventoBeneficiamentoMapper;
 import br.ufpi.recicle_ai.repository.EventoBeneficiamentoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Testes para EventoBeneficiamentoService")
 class EventoBeneficiamentoServiceTest {
 
     @Mock
-    private EventoBeneficiamentoRepository repository;
-
-    @Mock
-    private EventoBeneficiamentoMapper mapper;
-
+    private EventoBeneficiamentoRepository eventoBeneficiamentoRepository;
     @Mock
     private BeneficiamentoService beneficiamentoService;
-
     @Mock
     private ColetorService coletorService;
+    @Mock
+    private ItemInventarioService itemInventarioService;
+    @Mock
+    private EventoBeneficiamentoMapper eventoBeneficiamentoMapper;
 
     @InjectMocks
-    private EventoBeneficiamentoService service;
+    private EventoBeneficiamentoService eventoBeneficiamentoService;
 
-    private EventoBeneficiamento eventoMock;
-    private EventoBeneficiamentoDTO dtoMock;
-    private PontoColeta pontoColetaMock;
-    private Beneficiamento beneficiamentoMock;
-    private Coletor coletorMock;
+    private EventoBeneficiamento eventoBeneficiamento;
+    private Beneficiamento beneficiamento;
+    private Coletor coletor;
 
     @BeforeEach
     void setUp() {
-        pontoColetaMock = new PontoColeta();
-        pontoColetaMock.setId(1L);
-        pontoColetaMock.setBairro("Centro");
-        pontoColetaMock.setLogradouro("Rua A");
-        pontoColetaMock.setNumero("123");
-        pontoColetaMock.setCep("64000-000");
+        beneficiamento = new Beneficiamento();
+        beneficiamento.setId(1L);
 
-        beneficiamentoMock = new Beneficiamento();
-        beneficiamentoMock.setId(1L);
-        beneficiamentoMock.setPontoColeta(pontoColetaMock);
+        coletor = new Coletor();
+        coletor.setId(1L);
 
-        coletorMock = new Coletor();
-        coletorMock.setId(1L);
-        coletorMock.setNome("Coletor Teste");
-
-        eventoMock = new EventoBeneficiamento();
-        eventoMock.setId(1L);
-        eventoMock.setBeneficiamento(beneficiamentoMock);
-        eventoMock.setColetor(coletorMock);
-        eventoMock.setStatus(StatusBeneficiamentoEnum.AGENDADA);
-
-        dtoMock = new EventoBeneficiamentoDTO();
-        dtoMock.setId(1L);
-        dtoMock.setStatus(StatusBeneficiamentoEnum.AGENDADA);
+        eventoBeneficiamento = new EventoBeneficiamento();
+        eventoBeneficiamento.setId(1L);
+        eventoBeneficiamento.setBeneficiamento(beneficiamento);
+        eventoBeneficiamento.setColetor(coletor);
+        eventoBeneficiamento.setStatus(StatusBeneficiamentoEnum.AGENDADA);
+        eventoBeneficiamento.setItens(new ArrayList<>());
     }
 
-    @Test
-    @DisplayName("Deve atualizar evento com sucesso quando dados válidos forem fornecidos")
-    void testUpdate_Success() {
-        // Arrange
-        Long eventoId = 1L;
-        EventoBeneficiamentoForm form = new EventoBeneficiamentoForm();
-        form.setBeneficiamentoId(2L);
-        form.setColetorId(2L);
+    @Nested
+    @DisplayName("Testes para o método create")
+    class CreateTest {
+        @Test
+        @DisplayName("Deve criar um evento de beneficiamento com sucesso")
+        void create_Success() {
+            EventoBeneficiamentoForm form = new EventoBeneficiamentoForm();
+            form.setBeneficiamentoId(1L);
+            form.setColetorId(1L);
 
-        Beneficiamento novoBeneficiamento = new Beneficiamento();
-        novoBeneficiamento.setId(2L);
+            when(eventoBeneficiamentoRepository.existsByBeneficiamentoIdAndColetorId(1L, 1L)).thenReturn(false);
+            when(beneficiamentoService.findEntityById(1L)).thenReturn(beneficiamento);
+            when(coletorService.findEntityById(1L)).thenReturn(coletor);
+            when(eventoBeneficiamentoMapper.toModel(form)).thenReturn(new EventoBeneficiamento());
+            when(eventoBeneficiamentoRepository.save(any(EventoBeneficiamento.class))).thenReturn(eventoBeneficiamento);
+            when(eventoBeneficiamentoMapper.toDTO(eventoBeneficiamento)).thenReturn(new EventoBeneficiamentoDTO());
 
-        Coletor novoColetor = new Coletor();
-        novoColetor.setId(2L);
-        novoColetor.setNome("Novo Coletor");
+            EventoBeneficiamentoDTO result = eventoBeneficiamentoService.create(form);
 
-        when(repository.findById(eventoId)).thenReturn(Optional.of(eventoMock));
-        when(beneficiamentoService.findEntityById(2L)).thenReturn(novoBeneficiamento);
-        when(coletorService.findEntityById(2L)).thenReturn(novoColetor);
-        when(repository.save(any(EventoBeneficiamento.class))).thenReturn(eventoMock);
-        when(mapper.toDTO(any(EventoBeneficiamento.class))).thenReturn(dtoMock);
+            assertThat(result).isNotNull();
+            verify(eventoBeneficiamentoRepository).save(any(EventoBeneficiamento.class));
+        }
 
-        // Act
-        EventoBeneficiamentoDTO result = service.update(eventoId, form);
+        @Test
+        @DisplayName("Deve lançar exceção se o agendamento já existir")
+        void create_DuplicatedSchedule_ShouldThrowException() {
+            EventoBeneficiamentoForm form = new EventoBeneficiamentoForm();
+            form.setBeneficiamentoId(1L);
+            form.setColetorId(1L);
+            when(eventoBeneficiamentoRepository.existsByBeneficiamentoIdAndColetorId(1L, 1L)).thenReturn(true);
 
-        // Assert
-        assertNotNull(result);
-        verify(repository, times(1)).findById(eventoId);
-        verify(beneficiamentoService, times(1)).findEntityById(2L);
-        verify(coletorService, times(1)).findEntityById(2L);
-        verify(repository, times(1)).save(eventoMock);
+            RegraDeNegocioException exception = assertThrows(RegraDeNegocioException.class, () -> eventoBeneficiamentoService.create(form));
+
+            assertEquals("Este coletor já agendou participação para este beneficiamento.", exception.getMessage());
+            verify(eventoBeneficiamentoRepository, never()).save(any());
+        }
     }
 
-    @Test
-    @DisplayName("Deve lançar exceção quando evento não for encontrado")
-    void testUpdate_EventoNotFound() {
-        // Arrange
-        Long eventoId = 999L;
-        EventoBeneficiamentoForm form = new EventoBeneficiamentoForm();
-        form.setBeneficiamentoId(1L);
-        form.setColetorId(1L);
+    @Nested
+    @DisplayName("Testes para o método delete")
+    class DeleteTest {
+        @Test
+        @DisplayName("Deve deletar o evento e debitar itens do inventário do coletor")
+        void delete_Success() {
+            when(eventoBeneficiamentoRepository.findById(1L)).thenReturn(Optional.of(eventoBeneficiamento));
+            doNothing().when(eventoBeneficiamentoRepository).delete(eventoBeneficiamento);
 
-        when(repository.findById(eventoId)).thenReturn(Optional.empty());
+            assertDoesNotThrow(() -> eventoBeneficiamentoService.delete(1L));
 
-        // Act & Assert
-        assertThrows(RegraDeNegocioException.class, () -> service.update(eventoId, form));
-        verify(repository, times(1)).findById(eventoId);
-        verify(repository, never()).save(any());
-    }
+            verify(eventoBeneficiamentoRepository).delete(eventoBeneficiamento);
+        }
 
-    @Test
-    @DisplayName("Deve atualizar apenas beneficiamento quando coletor não mudar")
-    void testUpdate_OnlyBeneficiamento() {
-        // Arrange
-        Long eventoId = 1L;
-        EventoBeneficiamentoForm form = new EventoBeneficiamentoForm();
-        form.setBeneficiamentoId(2L);
-        form.setColetorId(1L); // Mesmo coletor
+        @Test
+        @DisplayName("Deve lançar exceção ao tentar deletar evento CONCLUIDO")
+        void delete_Concluido_ShouldThrowException() {
+            eventoBeneficiamento.setStatus(StatusBeneficiamentoEnum.CONCLUIDA);
+            when(eventoBeneficiamentoRepository.findById(1L)).thenReturn(Optional.of(eventoBeneficiamento));
 
-        Beneficiamento novoBeneficiamento = new Beneficiamento();
-        novoBeneficiamento.setId(2L);
+            RegraDeNegocioException exception = assertThrows(RegraDeNegocioException.class, () -> eventoBeneficiamentoService.delete(1L));
 
-        when(repository.findById(eventoId)).thenReturn(Optional.of(eventoMock));
-        when(beneficiamentoService.findEntityById(2L)).thenReturn(novoBeneficiamento);
-        when(repository.save(any(EventoBeneficiamento.class))).thenReturn(eventoMock);
-        when(mapper.toDTO(any(EventoBeneficiamento.class))).thenReturn(dtoMock);
-
-        // Act
-        EventoBeneficiamentoDTO result = service.update(eventoId, form);
-
-        // Assert
-        assertNotNull(result);
-        verify(beneficiamentoService, times(1)).findEntityById(2L);
-        verify(coletorService, never()).findEntityById(any());
+            assertEquals("Não é possível cancelar um evento de beneficiamento que já foi concluído.", exception.getMessage());
+            verify(eventoBeneficiamentoRepository, never()).delete(any());
+        }
     }
 }
