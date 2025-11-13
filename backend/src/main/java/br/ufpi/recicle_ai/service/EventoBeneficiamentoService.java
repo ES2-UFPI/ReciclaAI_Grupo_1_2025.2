@@ -41,7 +41,6 @@ public class EventoBeneficiamentoService {
         eventoBeneficiamento.setBeneficiamento(beneficiamento);
         Coletor coletor = coletorService.findEntityById(form.getColetorId());
         eventoBeneficiamento.setColetor(coletor);
-        eventoBeneficiamento.setStatus(StatusBeneficiamentoEnum.AGENDADA);
         eventoBeneficiamento = eventoBeneficiamentoRepository.save(eventoBeneficiamento);
         return eventoBeneficiamentoMapper.toDTO(eventoBeneficiamento);
     }

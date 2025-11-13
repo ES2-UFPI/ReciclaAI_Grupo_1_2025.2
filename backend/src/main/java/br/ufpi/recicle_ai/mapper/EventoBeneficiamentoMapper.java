@@ -17,7 +17,5 @@ public interface EventoBeneficiamentoMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "beneficiamento", ignore = true)
     @Mapping(target = "coletor", ignore = true)
-    @Mapping(target = "status", ignore = true)
-    @Mapping(target = "itens", ignore = true)
     EventoBeneficiamento toModel(EventoBeneficiamentoForm form);
 }
