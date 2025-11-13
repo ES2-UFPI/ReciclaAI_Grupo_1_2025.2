@@ -15,6 +15,10 @@ import br.ufpi.recicle_ai.domain.form.beneficiamento.EventoBeneficiamentoForm;
 import br.ufpi.recicle_ai.service.BeneficiamentoService;
 import br.ufpi.recicle_ai.service.ColetorService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+
 @Service
 @RequiredArgsConstructor
 public class EventoBeneficiamentoService {
@@ -43,6 +47,14 @@ public class EventoBeneficiamentoService {
         eventoBeneficiamento.setColetor(coletor);
         eventoBeneficiamento = eventoBeneficiamentoRepository.save(eventoBeneficiamento);
         return eventoBeneficiamentoMapper.toDTO(eventoBeneficiamento);
+    }
+  
+    @Transactional(readOnly = true)
+    public List<EventoBeneficiamentoDTO> findByBairro(String bairro) {
+        List<EventoBeneficiamento> eventos = eventoBeneficiamentoRepository.findByBairro(bairro);
+        return eventos.stream()
+                .map(eventoBeneficiamentoMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
 }
