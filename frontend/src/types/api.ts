@@ -45,6 +45,7 @@ export interface Item {
   id: number;
   nome: string;
   unidade: string;
+  valorMoedas?: number;
 }
 
 export interface ItemColeta {
@@ -101,6 +102,7 @@ export interface PontoBeneficiamento {
 export interface ItemBeneficiamento {
   id: number;
   quantidadeMinima: number;
+  valor: number;
   item: Item;
 }
 

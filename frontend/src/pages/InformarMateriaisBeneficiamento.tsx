@@ -13,13 +13,18 @@ interface LocationState {
   beneficiamentoId: number;
 }
 
+interface ItemData {
+  quantidade: number;
+  valor: number;
+}
+
 const InformarMateriaisBeneficiamento = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { beneficiamentoId } = location.state as LocationState;
   const [items, setItems] = useState<Item[]>([]);
-  const [quantidades, setQuantidades] = useState<Record<number, number>>({});
+  const [itemsData, setItemsData] = useState<Record<number, ItemData>>({});
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -59,9 +64,23 @@ const InformarMateriaisBeneficiamento = () => {
 
   const handleQuantidadeChange = (itemId: number, value: string) => {
     const quantidade = Number(value) || 0;
-    setQuantidades((prev) => ({
+    setItemsData((prev) => ({
       ...prev,
-      [itemId]: quantidade,
+      [itemId]: {
+        ...prev[itemId],
+        quantidade,
+      },
+    }));
+  };
+
+  const handleValorChange = (itemId: number, value: string) => {
+    const valor = Number(value) || 0;
+    setItemsData((prev) => ({
+      ...prev,
+      [itemId]: {
+        ...prev[itemId],
+        valor,
+      },
     }));
   };
 
@@ -70,8 +89,8 @@ const InformarMateriaisBeneficiamento = () => {
       setSubmitting(true);
 
       // Filter only items with quantity > 0
-      const itemsToSubmit = Object.entries(quantidades).filter(
-        ([_, quantidade]) => quantidade > 0
+      const itemsToSubmit = Object.entries(itemsData).filter(
+        ([_, data]) => data?.quantidade > 0
       );
 
       if (itemsToSubmit.length === 0) {
@@ -83,13 +102,28 @@ const InformarMateriaisBeneficiamento = () => {
         return;
       }
 
+      // Validate that all items with quantity also have a value
+      const invalidItems = itemsToSubmit.filter(
+        ([_, data]) => !data?.valor || data.valor <= 0
+      );
+
+      if (invalidItems.length > 0) {
+        toast({
+          variant: "destructive",
+          title: "Valor obrigatório",
+          description: "Informe o valor unitário para todos os materiais selecionados.",
+        });
+        return;
+      }
+
       // Submit each item
       await Promise.all(
-        itemsToSubmit.map(([itemId, quantidadeMinima]) =>
+        itemsToSubmit.map(([itemId, data]) =>
           adicionarItemBeneficiamento({
             beneficiamentoId,
             itemId: Number(itemId),
-            quantidadeMinima,
+            quantidadeMinima: data.quantidade,
+            valor: data.valor,
           })
         )
       );
@@ -120,7 +154,7 @@ const InformarMateriaisBeneficiamento = () => {
           Informar Materiais para Beneficiamento
         </h1>
         <p className="text-muted-foreground">
-          Indique as quantidades mínimas dos materiais que você aceita para beneficiamento
+          Indique as quantidades mínimas e o valor unitário dos materiais que você aceita para beneficiamento
         </p>
       </div>
 
@@ -143,14 +177,32 @@ const InformarMateriaisBeneficiamento = () => {
                     </Badge>
                   </div>
                 </div>
-                <div className="w-32 flex-shrink-0">
-                  <Input
-                    type="number"
-                    min="0"
-                    placeholder="Quantidade"
-                    value={quantidades[item.id] || ""}
-                    onChange={(e) => handleQuantidadeChange(item.id, e.target.value)}
-                  />
+                <div className="flex gap-3 flex-shrink-0">
+                  <div className="w-32">
+                    <label className="text-xs text-muted-foreground mb-1 block">
+                      Quantidade
+                    </label>
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="Qtd"
+                      value={itemsData[item.id]?.quantidade || ""}
+                      onChange={(e) => handleQuantidadeChange(item.id, e.target.value)}
+                    />
+                  </div>
+                  <div className="w-32">
+                    <label className="text-xs text-muted-foreground mb-1 block">
+                      Valor (R$)
+                    </label>
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0,00"
+                      value={itemsData[item.id]?.valor || ""}
+                      onChange={(e) => handleValorChange(item.id, e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
             ))}

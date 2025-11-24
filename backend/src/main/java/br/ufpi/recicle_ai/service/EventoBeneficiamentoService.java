@@ -28,6 +28,7 @@ public class EventoBeneficiamentoService {
     private final BeneficiamentoService beneficiamentoService;
     private final ColetorService coletorService;
     private final ItemInventarioService itemInventarioService;
+    private final RecompensaColetorService recompensaColetorService; // Injetado
 
     @Transactional(readOnly = true)
     public EventoBeneficiamentoDTO findById(Long id){
@@ -82,6 +83,10 @@ public class EventoBeneficiamentoService {
             throw new RegraDeNegocioException("Este evento de beneficiamento já está concluído.");
         }
 
+        // Credita a recompensa ao coletor
+        recompensaColetorService.creditarRecompensaPorEvento(evento);
+
+        // Credita os itens no inventário do Receptor (dono do beneficiamento)
         Long receptorId = evento.getBeneficiamento().getReceptor().getId();
         for (ItemEventoBeneficiamento item : evento.getItens()) {
             BigDecimal quantidadeACreditar = new BigDecimal(item.getQuantidade());

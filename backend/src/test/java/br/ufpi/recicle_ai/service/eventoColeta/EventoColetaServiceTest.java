@@ -11,10 +11,7 @@ import br.ufpi.recicle_ai.domain.model.item.Item;
 import br.ufpi.recicle_ai.exception.RegraDeNegocioException;
 import br.ufpi.recicle_ai.mapper.EventoColetaMapper;
 import br.ufpi.recicle_ai.repository.EventoColetaRepository;
-import br.ufpi.recicle_ai.service.ColetaService;
-import br.ufpi.recicle_ai.service.EventoColetaService;
-import br.ufpi.recicle_ai.service.ItemInventarioService;
-import br.ufpi.recicle_ai.service.ProdutorService;
+import br.ufpi.recicle_ai.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,6 +46,9 @@ class EventoColetaServiceTest {
 
     @Mock
     private ItemInventarioService itemInventarioService;
+
+    @Mock
+    private MoedasVerdesService moedasVerdesService;
 
     @InjectMocks
     private EventoColetaService eventoColetaService;
