@@ -10,8 +10,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Aplica a configuração a todos os endpoints da API
-//                .allowedOrigins("https://recicle-ai-w14s.onrender.com")
-                .allowedOrigins("http://localhost:8081")
+                .allowedOrigins("https://recicle-ai-w14s.onrender.com")
+//                .allowedOrigins("http://localhost:8081")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT") // Métodos HTTP permitidos
                 .allowedHeaders("*"); // Permite todos os cabeçalhos na requisição
     }
