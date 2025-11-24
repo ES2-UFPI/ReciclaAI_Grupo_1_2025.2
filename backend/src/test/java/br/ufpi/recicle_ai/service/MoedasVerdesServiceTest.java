@@ -2,8 +2,8 @@ package br.ufpi.recicle_ai.service;
 
 import br.ufpi.recicle_ai.domain.model.Produtor;
 import br.ufpi.recicle_ai.domain.model.eventoColeta.EventoColeta;
+import br.ufpi.recicle_ai.domain.model.eventoColeta.ItemEventoColeta;
 import br.ufpi.recicle_ai.domain.model.item.Item;
-import br.ufpi.recicle_ai.domain.model.item.ItemEventoColeta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
