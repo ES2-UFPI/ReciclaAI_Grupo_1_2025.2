@@ -58,12 +58,6 @@ const allMenuItems: MenuItem[] = [
     path: "/historico",
     allowedTypes: ["PRODUTOR", "COLETOR", "RECEPTOR"],
   },
-  {
-    icon: Coins,
-    label: "Moedas Verdes",
-    path: "/moedas",
-    allowedTypes: ["PRODUTOR"],
-  },
 ];
 
 const Sidebar = () => {

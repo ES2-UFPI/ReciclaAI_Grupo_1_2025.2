@@ -33,3 +33,31 @@ export async function atualizarQuantidadeInventario(
   
   return response.json();
 }
+
+export interface SaldoMoedasVerdes {
+  saldoMoedasVerdes: number;
+}
+
+export async function obterSaldoMoedasVerdes(produtorId: number): Promise<SaldoMoedasVerdes> {
+  const response = await fetch(`${API_BASE_URL}/produtores/${produtorId}`);
+  
+  if (!response.ok) {
+    throw new Error('Erro ao buscar saldo de moedas verdes');
+  }
+  
+  return response.json();
+}
+
+export interface SaldoColetor {
+  saldo: number;
+}
+
+export async function obterSaldoColetor(coletorId: number): Promise<SaldoColetor> {
+  const response = await fetch(`${API_BASE_URL}/coletores/${coletorId}`);
+  
+  if (!response.ok) {
+    throw new Error('Erro ao buscar saldo do coletor');
+  }
+  
+  return response.json();
+}

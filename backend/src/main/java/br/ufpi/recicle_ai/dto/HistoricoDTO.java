@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,5 +24,7 @@ public class HistoricoDTO {
     private String nomeParticipante; // Nome do Produtor (para Coletor) ou Coletor (para Receptor/Produtor)
     private String nomeLocal; // Nome do Ponto de Coleta
     private List<String> itens;
+    private BigDecimal totalMoedas;
+    private BigDecimal totalValorReal;
 
 }

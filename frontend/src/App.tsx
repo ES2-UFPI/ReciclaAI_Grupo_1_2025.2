@@ -11,7 +11,6 @@ import DeclaracaoMateriaisBeneficiamento from "./pages/DeclaracaoMateriaisBenefi
 import Inventario from "./pages/Inventario";
 import Historico from "./pages/Historico";
 import Relatorios from "./pages/Relatorios";
-import Moedas from "./pages/Moedas";
 import NotFound from "./pages/NotFound";
 import InventoryList from "./pages/InventoryList";
 import AddInventoryItem from "./pages/AddInventoryItem";
@@ -56,7 +55,6 @@ function App() {
                 <Route path="coletas-agendadas" element={<ColetasAgendadasColetor />} />
                 <Route path="historico" element={<Historico />} />
                 <Route path="relatorios" element={<Relatorios />} />
-                <Route path="moedas" element={<Moedas />} />
                 <Route
                   path="declaracao-materiais"
                   element={<DeclaracaoMateriais />}

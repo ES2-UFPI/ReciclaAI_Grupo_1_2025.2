@@ -27,6 +27,7 @@ public class EventoColetaService {
     private final ColetaService coletaService;
     private final ProdutorService produtorService;
     private final ItemInventarioService itemInventarioService;
+    private final MoedasVerdesService moedasVerdesService;
     private final EventoColetaMapper eventoColetaMapper;
 
     @Transactional
@@ -55,7 +56,7 @@ public class EventoColetaService {
 
     @Transactional(readOnly = true)
     public List<EventoColetaDTO> findAllByProdutorId(Long produtorId) {
-        return eventoColetaRepository.findAllByProdutorId(produtorId).stream()
+        return eventoColetaRepository.findAllByProdutorIdAndStatus(produtorId, StatusEventoColetaEnum.AGENDADA).stream()
                 .map(eventoColetaMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -92,6 +93,9 @@ public class EventoColetaService {
             throw new RegraDeNegocioException("Este evento de coleta já está concluído.");
         }
 
+        // Credita as moedas verdes ao produtor
+        moedasVerdesService.creditarMoedasPorEvento(eventoColeta);
+
         // Adiciona os itens ao inventário do coletor
         Long coletorId = eventoColeta.getColeta().getColetor().getId();
         for (ItemEventoColeta item : eventoColeta.getItens()) {
@@ -104,6 +108,4 @@ public class EventoColetaService {
         eventoColetaRepository.save(eventoColeta);
         return eventoColetaMapper.toDTO(eventoColeta);
     }
-
-
 }

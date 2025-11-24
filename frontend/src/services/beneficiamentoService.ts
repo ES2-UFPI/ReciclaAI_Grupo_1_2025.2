@@ -56,6 +56,7 @@ interface AdicionarItemBeneficiamentoRequest {
   quantidadeMinima: number;
   beneficiamentoId: number;
   itemId: number;
+  valor: number;
 }
 
 export async function adicionarItemBeneficiamento(data: AdicionarItemBeneficiamentoRequest): Promise<any> {

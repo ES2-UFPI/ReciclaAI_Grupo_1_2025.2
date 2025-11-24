@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -19,4 +21,7 @@ public class Item {
     private Long id;
     private String nome;
     private String unidade;
+
+    @Column(name = "valor_moedas", precision = 10, scale = 2)
+    private BigDecimal valorMoedas;
 }

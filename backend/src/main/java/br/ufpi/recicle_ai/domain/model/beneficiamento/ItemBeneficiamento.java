@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Entity
@@ -18,6 +20,7 @@ public class ItemBeneficiamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer quantidadeMinima;
+    private BigDecimal valor;
     @ManyToOne
     @JoinColumn(name = "beneficiamento_id", nullable = false)
     private Beneficiamento beneficiamento;

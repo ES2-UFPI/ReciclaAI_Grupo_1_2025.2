@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Search, Calendar, MapPin, Trash2 } from "lucide-react";
+import { Search, Calendar, MapPin, Trash2, DollarSign } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
@@ -127,6 +127,13 @@ const AgendarBeneficiamento = () => {
     }
   };
 
+  const calcularPrecoMinimo = (beneficiamento: Beneficiamento): number => {
+    return beneficiamento.itensBeneficiamento.reduce((total, itemBenef) => {
+      const valor = itemBenef.valor || 0;
+      return total + (valor * itemBenef.quantidadeMinima);
+    }, 0);
+  };
+
   return (
     <div className="max-w-5xl">
       {/* Beneficiamentos Agendados */}
@@ -144,96 +151,112 @@ const AgendarBeneficiamento = () => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            {beneficiamentosAgendados.map((evento) => (
-              <Card
-                key={evento.id}
-                className="bg-card hover:shadow-lg transition-shadow duration-200 border-primary/20"
-              >
-                <CardContent className="p-6 relative">
-                  <div className="absolute top-4 right-4 flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                      onClick={() => handleDelete(evento.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                    <img 
-                      src="/icone-coleta-1.png" 
-                      alt="Ícone Beneficiamento Agendado" 
-                      className="w-8 h-8 object-contain opacity-90"
-                    />
-                  </div>
-                  <div className="flex items-start justify-between mb-4 pb-4 border-b border-border">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-10 w-10 border-2 border-primary/20">
-                        <AvatarFallback className="bg-primary-light text-primary font-medium">
-                          {evento.beneficiamento.receptor.nome.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-muted-foreground mb-0.5">Receptor</p>
-                        <p className="font-medium text-foreground truncate">
-                          {evento.beneficiamento.receptor.nome}
-                        </p>
-                      </div>
+            {beneficiamentosAgendados.map((evento) => {
+              const precoMinimo = calcularPrecoMinimo(evento.beneficiamento);
+              
+              return (
+                <Card
+                  key={evento.id}
+                  className="bg-card hover:shadow-lg transition-shadow duration-200 border-primary/20"
+                >
+                  <CardContent className="p-6 relative">
+                    <div className="absolute top-4 right-4 flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        onClick={() => handleDelete(evento.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <img 
+                        src="/icone-coleta-1.png" 
+                        alt="Ícone Beneficiamento Agendado" 
+                        className="w-8 h-8 object-contain opacity-90"
+                      />
                     </div>
-                  </div>
-
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-start gap-3">
-                      <Calendar className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="text-xs text-muted-foreground mb-0.5">Data e Horário</p>
-                        <p className="font-medium text-foreground">
-                          {new Date(evento.beneficiamento.dataInicio).toLocaleDateString('pt-BR')}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(evento.beneficiamento.dataInicio).toLocaleTimeString('pt-BR', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })} às {new Date(evento.beneficiamento.dataFim).toLocaleTimeString('pt-BR', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </p>
+                    <div className="flex items-start justify-between mb-4 pb-4 border-b border-border">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10 border-2 border-primary/20">
+                          <AvatarFallback className="bg-primary-light text-primary font-medium">
+                            {evento.beneficiamento.receptor.nome.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-muted-foreground mb-0.5">Receptor</p>
+                          <p className="font-medium text-foreground truncate">
+                            {evento.beneficiamento.receptor.nome}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3">
-                      <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="text-xs text-muted-foreground mb-0.5">Local</p>
-                        <p className="text-sm font-medium text-foreground">
-                          {evento.beneficiamento.pontoColeta.logradouro}, {evento.beneficiamento.pontoColeta.numero}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {evento.beneficiamento.pontoColeta.bairro}
-                        </p>
+                    <div className="space-y-3 mb-4">
+                      <div className="flex items-start gap-3">
+                        <Calendar className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-0.5">Data e Horário</p>
+                          <p className="font-medium text-foreground">
+                            {new Date(evento.beneficiamento.dataInicio).toLocaleDateString('pt-BR')}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(evento.beneficiamento.dataInicio).toLocaleTimeString('pt-BR', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })} às {new Date(evento.beneficiamento.dataFim).toLocaleTimeString('pt-BR', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-0.5">Local</p>
+                          <p className="text-sm font-medium text-foreground">
+                            {evento.beneficiamento.pontoColeta.logradouro}, {evento.beneficiamento.pontoColeta.numero}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {evento.beneficiamento.pontoColeta.bairro}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="pt-3 border-t border-border">
-                    <p className="text-xs text-muted-foreground mb-2">Materiais informados:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {evento.itens.map((item) => (
-                        <Badge 
-                          key={item.id} 
-                          variant="secondary"
-                          className="bg-accent/10 text-foreground"
-                        >
-                          {item.item.nome} ({item.quantidade} {item.item.unidade === 'unidade' 
-                            ? (item.quantidade > 1 ? 'unidades' : 'unidade')
-                            : item.item.unidade})
-                        </Badge>
-                      ))}
+                    <div className="pt-3 border-t border-border">
+                      <p className="text-xs text-muted-foreground mb-2">Materiais informados:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {evento.itens.map((item) => (
+                          <Badge 
+                            key={item.id} 
+                            variant="secondary"
+                            className="bg-accent/10 text-foreground"
+                          >
+                            {item.item.nome} ({item.quantidade} {item.item.unidade === 'unidade' 
+                              ? (item.quantidade > 1 ? 'unidades' : 'unidade')
+                              : item.item.unidade})
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+
+                    <div className="pt-3 border-t border-border mt-3">
+                      <div className="flex items-center gap-2 bg-green-50 p-3 rounded-lg">
+                        <DollarSign className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="text-xs text-green-600 font-medium">Preço Mínimo</p>
+                          <p className="text-lg font-bold text-green-700">
+                            R$ {precoMinimo.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       )}
@@ -275,98 +298,114 @@ const AgendarBeneficiamento = () => {
             <div>Buscando beneficiamentos...</div>
           ) : resultados.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {resultados.map((beneficiamento) => (
-                <Card
-                  key={beneficiamento.id}
-                  className="bg-card hover:shadow-lg transition-shadow duration-200 border-border/50 flex flex-col"
-                >
-                  <CardContent className="p-6 relative flex flex-col flex-1">
-                    <img 
-                      src="/icone-coleta-2.png" 
-                      alt="Ícone Beneficiamento Disponível" 
-                      className="absolute top-4 right-4 w-8 h-8 object-contain opacity-90"
-                    />
-                    
-                    {/* Card Content */}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-4 pb-4 border-b border-border">
-                        <Avatar className="h-10 w-10 border-2 border-primary/20">
-                          <AvatarFallback className="bg-primary-light text-primary font-medium">
-                            {beneficiamento.receptor.nome.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs text-muted-foreground mb-0.5">Receptor</p>
-                          <p className="font-medium text-foreground truncate">
-                            {beneficiamento.receptor.nome}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3 mb-6">
-                        <div className="flex items-start gap-3">
-                          <Calendar className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-0.5">Data e Horário</p>
-                            <p className="text-sm font-medium text-foreground">
-                              {new Date(beneficiamento.dataInicio).toLocaleDateString('pt-BR')}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {new Date(beneficiamento.dataInicio).toLocaleTimeString('pt-BR', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })} às {new Date(beneficiamento.dataFim).toLocaleTimeString('pt-BR', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
+              {resultados.map((beneficiamento) => {
+                const precoMinimo = calcularPrecoMinimo(beneficiamento);
+                
+                return (
+                  <Card
+                    key={beneficiamento.id}
+                    className="bg-card hover:shadow-lg transition-shadow duration-200 border-border/50 flex flex-col"
+                  >
+                    <CardContent className="p-6 relative flex flex-col flex-1">
+                      <img 
+                        src="/icone-coleta-2.png" 
+                        alt="Ícone Beneficiamento Disponível" 
+                        className="absolute top-4 right-4 w-8 h-8 object-contain opacity-90"
+                      />
+                      
+                      {/* Card Content */}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-border">
+                          <Avatar className="h-10 w-10 border-2 border-primary/20">
+                            <AvatarFallback className="bg-primary-light text-primary font-medium">
+                              {beneficiamento.receptor.nome.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs text-muted-foreground mb-0.5">Receptor</p>
+                            <p className="font-medium text-foreground truncate">
+                              {beneficiamento.receptor.nome}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-start gap-3">
-                          <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-0.5">Endereço</p>
-                            <p className="text-sm font-medium text-foreground">
-                              {beneficiamento.pontoColeta.logradouro}, {beneficiamento.pontoColeta.numero}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {beneficiamento.pontoColeta.bairro}
-                            </p>
+                        <div className="space-y-3 mb-6">
+                          <div className="flex items-start gap-3">
+                            <Calendar className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-0.5">Data e Horário</p>
+                              <p className="text-sm font-medium text-foreground">
+                                {new Date(beneficiamento.dataInicio).toLocaleDateString('pt-BR')}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {new Date(beneficiamento.dataInicio).toLocaleTimeString('pt-BR', {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })} às {new Date(beneficiamento.dataFim).toLocaleTimeString('pt-BR', {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-3">
+                            <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-0.5">Endereço</p>
+                              <p className="text-sm font-medium text-foreground">
+                                {beneficiamento.pontoColeta.logradouro}, {beneficiamento.pontoColeta.numero}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {beneficiamento.pontoColeta.bairro}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-border mb-4">
+                          <p className="text-xs text-muted-foreground mb-2">Materiais aceitos:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {beneficiamento.itensBeneficiamento.map((itemBeneficiamento) => (
+                              <Badge 
+                                key={itemBeneficiamento.id} 
+                                variant="secondary"
+                                className="bg-accent/10 text-foreground"
+                              >
+                                {itemBeneficiamento.item.nome} (min: {itemBeneficiamento.quantidadeMinima} {itemBeneficiamento.item.unidade === 'unidade' 
+                                  ? (itemBeneficiamento.quantidadeMinima > 1 ? 'unidades' : 'unidade')
+                                  : itemBeneficiamento.item.unidade})
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-border mb-4">
+                          <div className="flex items-center gap-2 bg-green-50 p-3 rounded-lg">
+                            <DollarSign className="h-5 w-5 text-green-600" />
+                            <div>
+                              <p className="text-xs text-green-600 font-medium">Preço Mínimo</p>
+                              <p className="text-lg font-bold text-green-700">
+                                R$ {precoMinimo.toFixed(2)}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="pt-3 border-t border-border mb-4">
-                        <p className="text-xs text-muted-foreground mb-2">Materiais aceitos:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {beneficiamento.itensBeneficiamento.map((itemBeneficiamento) => (
-                            <Badge 
-                              key={itemBeneficiamento.id} 
-                              variant="secondary"
-                              className="bg-accent/10 text-foreground"
-                            >
-                              {itemBeneficiamento.item.nome} (min: {itemBeneficiamento.quantidadeMinima} {itemBeneficiamento.item.unidade === 'unidade' 
-                                ? (itemBeneficiamento.quantidadeMinima > 1 ? 'unidades' : 'unidade')
-                                : itemBeneficiamento.item.unidade})
-                            </Badge>
-                          ))}
-                        </div>
+                      {/* Button at bottom */}
+                      <div className="mt-auto pt-4">
+                        <Button
+                          onClick={() => selecionarEvento(beneficiamento)}
+                          className="w-full bg-accent hover:bg-accent-hover text-accent-foreground font-medium"
+                        >
+                          Selecionar e Informar Materiais
+                        </Button>
                       </div>
-                    </div>
-
-                    {/* Button at bottom */}
-                    <div className="mt-auto pt-4">
-                      <Button
-                        onClick={() => selecionarEvento(beneficiamento)}
-                        className="w-full bg-accent hover:bg-accent-hover text-accent-foreground font-medium"
-                      >
-                        Selecionar e Informar Materiais
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           ) : (
             <Card className="p-8 text-center bg-card">
