@@ -1,6 +1,7 @@
 package br.ufpi.recicle_ai.service;
 
 import br.ufpi.recicle_ai.domain.dto.eventoColeta.EventoColetaDTO;
+import br.ufpi.recicle_ai.domain.enuns.TipoPessoaEnum;
 import br.ufpi.recicle_ai.domain.form.eventoColeta.EventoColetaForm;
 import br.ufpi.recicle_ai.domain.model.coleta.Coleta;
 import br.ufpi.recicle_ai.domain.model.eventoColeta.EventoColeta;
@@ -26,6 +27,7 @@ public class EventoColetaService {
     private final ColetaService coletaService;
     private final ProdutorService produtorService;
     private final ItemInventarioService itemInventarioService;
+    private final MoedasVerdesService moedasVerdesService;
     private final EventoColetaMapper eventoColetaMapper;
 
     @Transactional
@@ -54,7 +56,14 @@ public class EventoColetaService {
 
     @Transactional(readOnly = true)
     public List<EventoColetaDTO> findAllByProdutorId(Long produtorId) {
-        return eventoColetaRepository.findAllByProdutorId(produtorId).stream()
+        return eventoColetaRepository.findAllByProdutorIdAndStatus(produtorId, StatusEventoColetaEnum.AGENDADA).stream()
+                .map(eventoColetaMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventoColetaDTO> findAllByColetorId(Long coletorId) {
+        return eventoColetaRepository.findAllByColetaColetorId(coletorId).stream()
                 .map(eventoColetaMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -70,9 +79,33 @@ public class EventoColetaService {
         Long produtorId = eventoColeta.getProdutor().getId();
         for (ItemEventoColeta item : eventoColeta.getItens()) {
             BigDecimal quantidadeARestituir = new BigDecimal(item.getQuantidade());
-            itemInventarioService.creditarNoInventario(produtorId, item.getItem().getId(), quantidadeARestituir);
+            itemInventarioService.creditarNoInventario(produtorId, TipoPessoaEnum.PRODUTOR, item.getItem().getId(), quantidadeARestituir);
         }
 
         eventoColetaRepository.delete(eventoColeta);
+    }
+
+    @Transactional
+    public EventoColetaDTO confirmarEvento(Long id) {
+        EventoColeta eventoColeta = findEntityById(id);
+
+        if (eventoColeta.getStatus() == StatusEventoColetaEnum.CONCLUIDA) {
+            throw new RegraDeNegocioException("Este evento de coleta já está concluído.");
+        }
+
+        // Credita as moedas verdes ao produtor
+        moedasVerdesService.creditarMoedasPorEvento(eventoColeta);
+
+        // Adiciona os itens ao inventário do coletor
+        Long coletorId = eventoColeta.getColeta().getColetor().getId();
+        for (ItemEventoColeta item : eventoColeta.getItens()) {
+            BigDecimal quantidadeACreditar = new BigDecimal(item.getQuantidade());
+            itemInventarioService.creditarNoInventario(coletorId, TipoPessoaEnum.COLETOR, item.getItem().getId(), quantidadeACreditar);
+        }
+
+        // Atualiza o status do evento
+        eventoColeta.setStatus(StatusEventoColetaEnum.CONCLUIDA);
+        eventoColetaRepository.save(eventoColeta);
+        return eventoColetaMapper.toDTO(eventoColeta);
     }
 }

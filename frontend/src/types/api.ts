@@ -45,6 +45,7 @@ export interface Item {
   id: number;
   nome: string;
   unidade: string;
+  valorMoedas?: number;
 }
 
 export interface ItemColeta {
@@ -76,7 +77,7 @@ export interface EventoColeta {
   itens: ItemEvento[];
 }
 
-export type TipoPessoa = 'PRODUTOR' | 'COLETOR';
+export type TipoPessoa = 'PRODUTOR' | 'COLETOR' | 'RECEPTOR';
 
 export interface InventoryItem {
   id: number;
@@ -88,4 +89,42 @@ export interface InventoryItem {
   };
   pessoaId: number;
   tipoPessoa: TipoPessoa;
+}
+
+export interface PontoBeneficiamento {
+  id: number;
+  logradouro: string;
+  numero: string;
+  bairro: string;
+  cep: string;
+}
+
+export interface ItemBeneficiamento {
+  id: number;
+  quantidadeMinima: number;
+  valor: number;
+  item: Item;
+}
+
+export interface Beneficiamento {
+  id: number;
+  receptor: Agente;
+  dataInicio: string;
+  dataFim: string;
+  pontoColeta: PontoBeneficiamento;
+  itensBeneficiamento: ItemBeneficiamento[];
+}
+
+export interface EventoBeneficiamento {
+  id: number;
+  beneficiamento: Beneficiamento;
+  coletor: Agente;
+  status: 'AGENDADA' | 'CANCELADA' | 'CONCLUIDA';
+  itens: ItemEventoBeneficiamento[];
+}
+
+export interface ItemEventoBeneficiamento {
+  id: number;
+  quantidade: number;
+  item: Item;
 }

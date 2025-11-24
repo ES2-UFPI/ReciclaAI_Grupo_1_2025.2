@@ -1,7 +1,5 @@
 import { API_BASE_URL } from '@/config/api';
-import { InventoryItem } from '@/types/api';
-
-type TipoPessoa = 'PRODUTOR' | 'COLETOR';
+import { InventoryItem, TipoPessoa } from '@/types/api';
 
 export async function listarInventario(pessoaId: number, tipoPessoa: TipoPessoa): Promise<InventoryItem[]> {
   const response = await fetch(`${API_BASE_URL}/inventario/pessoa/${pessoaId}?tipoPessoa=${tipoPessoa}`);
@@ -31,6 +29,34 @@ export async function atualizarQuantidadeInventario(
   
   if (!response.ok) {
     throw new Error('Erro ao atualizar quantidade');
+  }
+  
+  return response.json();
+}
+
+export interface SaldoMoedasVerdes {
+  saldoMoedasVerdes: number;
+}
+
+export async function obterSaldoMoedasVerdes(produtorId: number): Promise<SaldoMoedasVerdes> {
+  const response = await fetch(`${API_BASE_URL}/produtores/${produtorId}`);
+  
+  if (!response.ok) {
+    throw new Error('Erro ao buscar saldo de moedas verdes');
+  }
+  
+  return response.json();
+}
+
+export interface SaldoColetor {
+  saldo: number;
+}
+
+export async function obterSaldoColetor(coletorId: number): Promise<SaldoColetor> {
+  const response = await fetch(`${API_BASE_URL}/coletores/${coletorId}`);
+  
+  if (!response.ok) {
+    throw new Error('Erro ao buscar saldo do coletor');
   }
   
   return response.json();

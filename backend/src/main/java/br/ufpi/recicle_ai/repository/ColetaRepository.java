@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
 @Repository
 public interface ColetaRepository extends JpaRepository<Coleta, Long> {
-    Page<Coleta> findAllByPontoColetaBairroContainingIgnoreCase(String bairro, Pageable pageable);
+    Page<Coleta> findAllByPontoColetaBairroContainingIgnoreCaseOrderByDataInicioAsc(String bairro, Pageable pageable);
+    Page<Coleta> findAllByColetorIdOrderByDataInicioAsc(Long coletorId, Pageable pageable);
 }
